@@ -29,16 +29,17 @@ const InputToDo = () => {
     }))
   }
   return (
-    <div className=" w-full  absolute bottom-0">
-      <TextField sx={{paddingBottom:'6px', paddingInline:4 }}
+    <div className="-mb-6 ">
+      <TextField sx={{ paddingBottom: '6px', paddingInline: 4, width: '100%' }}
         type="text"
+
         placeholder="go to mosque friday 12:00 pm"
         id='filled-required'
         variant="filled"
         fullWidth
         slotProps={{
           input: {
-          
+
             startAdornment: (
               <InputAdornment position="start">
                 {blur && <AddIcon />}
@@ -60,7 +61,7 @@ const InputToDo = () => {
             )
           }
         }}
-        onFocus={(e) =>{ setFocus(true); setBlur(false) }}
+        onFocus={(e) => { setFocus(true); setBlur(false) }}
         onBlur={() => {
           if (!anchorEl.menu1 && !anchorEl.menu2) {
             setBlur(true);
@@ -72,7 +73,7 @@ const InputToDo = () => {
         anchorEl={anchorEl['menu1']}
         open={Boolean(anchorEl['menu1'])}
         onClose={() => handelClose('menu1')}
-      
+
       >
         <MenuItem onClick={() => handelClose('menu1')}>CatagoryOne</MenuItem>
         <MenuItem onClick={() => handelClose('menu1')}>Catagorytwo</MenuItem>
@@ -84,7 +85,7 @@ const InputToDo = () => {
         anchorEl={anchorEl['menu2']}
         open={Boolean(anchorEl['menu2'])}
         onClose={() => handelClose('menu2')}
-      
+
       >
         <MenuItem onClick={() => handelClose('menu2')}>Today</MenuItem>
         <MenuItem onClick={() => handelClose('menu2')}>Tomorow</MenuItem>
