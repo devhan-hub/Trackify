@@ -4,53 +4,33 @@ import StarOutlined from '@mui/icons-material/StarBorder';
 import Star from '@mui/icons-material/Star';
 import { CircleOutlined, CheckCircle } from "@mui/icons-material"
 import CalendarToday from '@mui/icons-material/CalendarMonthTwoTone'
-import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useDispatch } from "react-redux";
+import {addTask , removeTask , toggelCompleted, toggelImportant}  from '../slice/TasksAdd.tsx'
 
-const TaskItem = ({ task }) => (
-  <Paper className="flex justify-between ">
-    <div >
-      <Checkbox className="flex" icon={<CircleOutlined />} checkedIcon={<CheckCircle />} />
-
-      {task.title}
-      <div className="-space-x-4 -mt-2">
-        <span className="p-12">{task.catagory}</span>
-        <span> <CalendarToday />{task.day}</span>
-      </div>
-    </div>
-    <Checkbox className="ml-auto" icon={<StarOutlined />} checkedIcon={<Star />} />
-
-  </Paper>
-)
-
-const TodoDisplay = ({ tasks=[] }) => {
-  const completedtask = tasks?.filter((task) => task.complet === true)
-  const inCompletTask = tasks?.filter((task) => task.complet === false)
-
+const TodoDisplay = ({ tasks = [] }) => {
+  const dispatch= useDispatch();
   return (
-    <div className="space-y-12">
 
-      <div className="space-y-6">
-     
-        { inCompletTask.map((task, index) => (
-            <TaskItem key={`incomplete-${index}`} task={task} />
-          ))
-        }
-      
-      </div>
+    <div>
 
-        {completedtask.length > 0 && 
-            <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                Completed
-              </AccordionSummary>
-              <AccordionDetails>
-                {completedtask.map((task, index) => (
-                  <TaskItem key={`completed-${index}`} task={task} />
-                ))}
-              </AccordionDetails>
-            </Accordion>
-        }    
+      {tasks && tasks.map((task ) =>
+
+      (<Paper key={`${task.id}`} className="flex justify-between ">
+        <div >
+          <Checkbox className="flex" checked={task.completed} icon={<CircleOutlined />} checkedIcon={<CheckCircle />} onClick={()=>dispatch(toggelCompleted(task.id))}/>
+
+          {task.title}
+          <div className="-space-x-4 -mt-2">
+            <span className="p-12">{task.category
+            }</span>
+            <span> <CalendarToday />{task.day}</span>
+          </div>
+        </div>
+        <Checkbox className="ml-auto" checked={task.important} icon={<StarOutlined />} checkedIcon={<Star />}  onClick={()=>dispatch(toggelImportant(task.id))}/>
+
+      </Paper>
+      )
+      )}
     </div>
   )
 
