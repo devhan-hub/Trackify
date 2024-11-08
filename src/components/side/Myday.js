@@ -1,43 +1,38 @@
 import React, { useState , useEffect } from 'react';
-import TodoDisplay from '../main/TodoDisplay';
+import TodoDisplay from '../input-display/TodoDisplay.js';
 import Typography from '@mui/material/Typography';
-import InputToDo from '../main/InputToDo';
+import InputToDo from '../input-display/InputToDo.jsx';
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import {addTask , removeTask , toggelCompleted, toggelImportant} from '../slice/TasksAdd.tsx'
-
+import {addTask , removeTask , toggelCompleted, toggelImportant} from '../feature/TasksAddSlice.tsx'
 const Myday = () => {
   const [displayedCompleted , setDisplayCompleted]= useState([])
   const [displayedInCompleted , setDisplayInCompleted]= useState([])
 
-   const tasks = useSelector(state=> state.toDo.tasks)
-   const typeCategory= useSelector(state=>state.typeCatagory.type)
- 
-   useEffect(() => {
-    const completedTaskMyDay = tasks.filter(task => task.completed === true && task.day === 'today');
-    const incompletTaskMyDay = tasks.filter(task => task.completed === false && task.day === 'today');
-    const completedTask = tasks.filter(task =>  task.completed === true);
-    const incompletTask = tasks.filter(task => task.completed === false);
-    const importantTask = tasks.filter(task => task.important && !task.completed);
 
+   const tasks = useSelector(state=> state.toDo.tasks)
+   
+   const typeCategory= useSelector(state=>state.catagory.type)
+   useEffect(() => {
     switch (typeCategory) {
       case 'myday':
+        const completedTaskMyDay = tasks.filter(task => task.completed === true && task.dueDate === 'today' );
+        const incompletTaskMyDay = tasks.filter(task => task.completed === false && task.dueDate === 'today' );
         setDisplayCompleted(completedTaskMyDay);
         setDisplayInCompleted(incompletTaskMyDay);
         break;
-      case 'taskes':
-        setDisplayCompleted(completedTask);
-        setDisplayInCompleted(incompletTask);
-        break;
       case 'important':
+        const importantTask = tasks.filter(task => task.important && !task.completed);
         setDisplayCompleted([]);
         setDisplayInCompleted(importantTask);
         break;
       default:
-        setDisplayCompleted([]);
-        setDisplayInCompleted([]);
+        const completedTask = tasks.filter(task =>  task.completed === true && task.catagory ===typeCategory);
+        const incompletTask = tasks.filter(task => task.completed === false && task.catagory ===typeCategory);
+        setDisplayCompleted(completedTask);
+        setDisplayInCompleted(incompletTask)
     }
   }, [typeCategory, tasks]);
 
@@ -60,7 +55,7 @@ const Myday = () => {
             }
           </div>
           {displayedCompleted.length > 0 &&
-            <Accordion >
+            <Accordion defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 Completed
               </AccordionSummary>
