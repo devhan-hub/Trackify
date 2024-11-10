@@ -2,39 +2,49 @@ import { Drawer, Divider, List, ListItem, ListItemIcon, ListItemText, TextField,
 import { BsSun } from "react-icons/bs";
 import { StarOutline, ListAltOutlined, HouseOutlined, Add as AddIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { toggelType, addCatagory, selectAddedCatagory, selectDefaultCatagory } from '../feature/SidebarNavSlice';
+import { selectGroup, addGroup , setSelectedGroup,fetchGroups } from '../feature/TasksAddSlice';
 import { Link } from "react-router-dom";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const Sidebar = () => {
+const Sidebar = ({userId}) => {
   const dispatch = useDispatch();
-  const addedCatagory = useSelector(selectAddedCatagory);
-  const defaultCatogory = useSelector(selectDefaultCatagory);
+  const groups = useSelector(selectGroup)
+  const groupStatus = useSelector(state => state.toDo.groupStatus)
+  const defaultGroup=[{id:'1myday' , name:'myday'} ,{id:'2important' , name:'important'} , {id:'3planned' , name:'planned'}]
+  const updatedGroup=[ ...defaultGroup,...groups]
   const [newCatagoryName, setNewCatagoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState(null);
 
+  useEffect(()=> {
+    if(groupStatus ==='idle') {
+      dispatch(fetchGroups(1))
+    }
+   
+  },[ dispatch , userId , groupStatus])
+
   const handleAddCategory = () => {
-    const newCategoryName = `untitled${addedCatagory.length + 1}`;
+    const newCategoryName = `untitled${groups.length}`;
     setEditingCategory(newCategoryName);
     setNewCatagoryName(newCategoryName);
   };
 
   const handelSave = () => {
     if (newCatagoryName) {
-      dispatch(addCatagory(newCatagoryName));
+      dispatch(addGroup({ userId: 1, group: {name: newCatagoryName } }));
       setNewCatagoryName('');
       setEditingCategory(null);
     }
   };
 
   const CatagoryItem = (Icon, value, key) => (
-    <Link to={`/todo/${value}`} key={key} className="-ml-20">
-      <ListItem button onClick={() => dispatch(toggelType(value))} >
+    <Link to={`todo/${key}`} key={key} className="w-full">
+      <ListItem button onClick={() => dispatch(setSelectedGroup(key))}  className="cursor-pointer">
         <ListItemIcon>{Icon}</ListItemIcon>
         <ListItemText className="capitalize">{value}</ListItemText>
       </ListItem>
-    </Link>
+      </Link>
+  
   );
 
   const icon = [<BsSun />, <StarOutline />, <ListAltOutlined />, <HouseOutlined />];
@@ -53,22 +63,14 @@ const Sidebar = () => {
           <ListItem className="mb-3 mt-4">
           <TextField variant="standard" placeholder="search" size="small" className="outline-none" />
           </ListItem>
-          {/* Default Categories */}
-          {defaultCatogory.map((category, index) => (
-            CatagoryItem(icon[index], category, `default-${index}`)
+          
+         
+          {updatedGroup.map((group, index) => (
+            CatagoryItem(icon[index]?icon[index]:<FormatListBulletedIcon />, group.name, group.id)
           ))}
 
           <Divider sx={{ width: '100%' }} />
 
-          {/* User-Added Categories */}
-          {addedCatagory.length > 0 && addedCatagory.map((category, index) => (
-            <Link to={`/todo/${category}`} key={`added-${index}`} className="-ml-10">
-              <ListItem button onClick={() => dispatch(toggelType(category))}>
-                <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
-                <ListItemText primary={category} />
-              </ListItem>
-            </Link>
-          ))}
 
           {/* Input Field for New Category */}
           {editingCategory && (
