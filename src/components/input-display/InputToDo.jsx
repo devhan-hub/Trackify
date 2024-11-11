@@ -3,10 +3,9 @@ import AddIcon from '@mui/icons-material/Add'
 import { CircleOutlined, CheckCircle, Star, StarBorder, MailRounded } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { addTask } from '../feature/TasksAddSlice.tsx'
+import { addTodo } from '../feature/TasksAddSlice.jsx'
 import { Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import Fab from '@mui/material/Fab'
-import Input from "@mui/material/Input";
 import Checkbox from "@mui/material/Checkbox";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -19,13 +18,13 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import {selectCurrentCatgory} from '../feature/SidebarNavSlice.js'
 
 const InputToDo = () => {
   const dispatch = useDispatch();
+  const groupId = useSelector(state=> state.toDo.selectedGroupId)
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState({})
-   const currentCatagory=useSelector(selectCurrentCatgory)
+   const currentCatagory=useSelector(state=> state.toDo.selectedGroupId)
   const initalState = {
     title: '',
     note: '',
@@ -33,7 +32,7 @@ const InputToDo = () => {
     repeat: 'none',
     completed: false,
     important: false,
-    catagory:'',
+    catagory:currentCatagory,
   }
 
   useEffect(() => {
@@ -42,8 +41,8 @@ const InputToDo = () => {
       note: '',
       dueDate: 'today',
       repeat: 'none',
-      completed: false,
-      important: false,
+      completed: true,
+      important: true,
       catagory: currentCatagory
     })
 
@@ -87,16 +86,13 @@ const InputToDo = () => {
 
     }
 
-
+  const send = {userId:1 ,groupId , todo:form}
     if (form) {
-      dispatch(addTask(form))
+      dispatch(addTodo(send))
       handelClose()
-      console.log(form)
       setForm(initalState)
      
     }
-
-
   }
 
   const SelectBox = (menuList, title, name) => {
