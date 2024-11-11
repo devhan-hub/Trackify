@@ -6,7 +6,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ListAltOutlined } from "@mui/icons-material"
 import { useSelector , useDispatch } from 'react-redux';
-import {addTask , removeTask , toggelCompleted, toggelImportant} from '../feature/TasksAddSlice.tsx'
+// import {addTask , removeTask , toggelCompleted, toggelImportant} from '../feature/TasksAddSlice.jsx'
 
 const AccordianList =({day , tasks})=> {
     return ( 
@@ -21,14 +21,12 @@ const AccordianList =({day , tasks})=> {
   )
 }
 
-const Planned = () => {
-  const tasks = useSelector(state=> state.toDo.tasks)
-  console.log(tasks)
-
+const Planned = ({todos}) => {
+ 
  const dispach= useDispatch();
-  const todayTask = tasks?.filter((task) => task.dueDate === 'today')
-  const tomorrowTask = tasks?.filter((task) => task.dueDate === 'tomorrow')
-  const yesterdaytask = tasks?.filter((task) => task.dueDate === 'next-week')
+  const todayTask = todos?.filter((task) => task.dueDate === 'today')
+  const tomorrowTask = todos?.filter((task) => task.dueDate === 'tomorrow')
+  const yesterdaytask = todos?.filter((task) => task.dueDate === 'next-week')
 console.log(todayTask)
   return (
     <div className="space-y-6 p-6 pt-10">
