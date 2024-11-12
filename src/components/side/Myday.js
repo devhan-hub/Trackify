@@ -5,28 +5,33 @@ import InputToDo from '../input-display/InputToDo.jsx';
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector } from 'react-redux';
+import {  isToday, parseISO } from 'date-fns';
+
 
 const Myday = ({ todos }) => {
   const groups = useSelector(state => state.toDo.groups)
   const typeCategory = useSelector(state => state.toDo.selectedGroupId);
-  const [displayedCompleted, setDisplayCompleted] = useState([]); // Ensure it's initialized as an array
-  const [displayedInCompleted, setDisplayInCompleted] = useState([]); // Ensure it's initialized as an array
-  const [groupName , setGroupName] = useState('')
+  // const { catagory } = useParams(); // Capture the category from URL
 
+  const [displayedCompleted, setDisplayCompleted] = useState([]); 
+  const [displayedInCompleted, setDisplayInCompleted] = useState([]); 
+  const [groupName , setGroupName] = useState('')
   useEffect(() => {
     if (!todos )  return;
-  console.log(todos)
-     // If todos is undefined, don't run the filtering logic
+     
     switch (typeCategory) {
+
       case '1myday':
-        const completedTaskMyDay = todos.filter(task => task.completed === true && task.dueDate === 'today');
-        const incompletTaskMyDay = todos.filter(task => task.completed === false && task.dueDate === 'today');
+        const completedTaskMyDay = todos.filter(task => task.completed === true  && isToday(parseISO(task.dueDate)) );
+        const incompletTaskMyDay = todos.filter(task => task.completed === false && isToday(parseISO(task.dueDate)) );
+       
         setDisplayCompleted(completedTaskMyDay);
         setDisplayInCompleted(incompletTaskMyDay);
         setGroupName('myday')
         break;
       case '2important':
-        const importantTask = todos.filter(task => task.important && !task.completed);
+        const importantTask = todos.filter(task => task.important === true && task.completed === false);
+        console.log(importantTask , 'importa')
         setDisplayCompleted([]);
         setDisplayInCompleted(importantTask);
         setGroupName('important')
@@ -36,12 +41,14 @@ const Myday = ({ todos }) => {
         const incompletTask = todos.filter(task => task.completed === false);
         setDisplayCompleted(completedTask);
         setDisplayInCompleted(incompletTask);
-        setGroupName(groups.find(group=> group.id === typeCategory).name)
+        const group = groups?.find(group => group.id === typeCategory);
+        setGroupName(group?.name || 'Task'); 
+        break;
 
     }
-  }, [typeCategory, todos]); // Ensure the effect re-runs when typeCategory or todos changes
+  }, [typeCategory, todos]);
 
-  return (
+    return (
     <div className="space-y-6 p-6 py-10 mb-44">
       <div className="title space-y-3">
         <Typography variant="h3" className="capitalize">{groupName}</Typography>

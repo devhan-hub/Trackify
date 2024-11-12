@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from '../../config/firebaseConfig'
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, setDoc } from 'firebase/firestore'
 
 
 
@@ -13,34 +13,33 @@ export const fetchTodosByGroup = createAsyncThunk('task/fetchTodosByGroup', asyn
 })
 
 export const fetchGroups = createAsyncThunk('task/fetchGroup', async (userId) => {
-  const groupCol = collection( db ,`users/${userId}/groups`)
+  const groupCol = collection(db, `users/${userId}/groups`)
   const groupSnapshot = await getDocs(groupCol)
   return groupSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 })
 
 export const fetchUserTask = createAsyncThunk('task/fetchUserTask', async (userId) => {
-  const userTaskCol = collection( db ,`users/${userId}/userTask`);
+  const userTaskCol = collection(db, `users/${userId}/userTask`);
   const usertaskSnapshot = await getDocs(userTaskCol);
   return usertaskSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
 })
 
-export const addUserTask = createAsyncThunk('task/addUserTask', async ({ groupId, userId, todo }) => {
-  const addedDoc = { groupId: groupId, ...todo }
-  const userTaskCol = collection( db ,`users/${userId}/userTask`);
-  const addTask = await addDoc(userTaskCol, addedDoc)
-  return { id: addTask.id, ...addedDoc }
+export const addUserTask = createAsyncThunk('task/addUserTask', async ({ userId, todo, id }) => {
+  const userTaskDocRef = doc(db, `users/${userId}/userTask`, id);
+  await setDoc(userTaskDocRef,todo)
+  return { id, ...todo }
 })
 
 export const addGroup = createAsyncThunk('task/addgroup', async ({ userId, group }) => {
-  const groupcol = collection( db ,`users/${userId}/groups`)
+  const groupcol = collection(db, `users/${userId}/groups`)
   const groupRef = await addDoc(groupcol, group);
   return { id: groupRef.id, ...group }
 })
 
-export const addTodo = createAsyncThunk('task/addTodo', async ({ userId, groupId, todo } , {dispatch}) => {
+export const addTodo = createAsyncThunk('task/addTodo', async ({ userId, groupId, todo }, { dispatch }) => {
   const todosCol = collection(db, `users/${userId}/groups/${groupId}/todos`);
   const docRef = await addDoc(todosCol, todo);
-  await dispatch(addUserTask({ groupId, userId, todo }));
+  await dispatch(addUserTask({ userId, todo, id: docRef.id }));
   return { groupId, id: docRef.id, ...todo }
 })
 
@@ -52,15 +51,21 @@ export const deleteTodo = createAsyncThunk('task/deleteTodo', async ({ userId, t
 
 export const updateTodo = createAsyncThunk('task/updateTodo', async ({ userId, todoId, updatedTodo, groupId }) => {
   const todoRef = doc(db, `users/${userId}/groups/${groupId}/todos`, todoId);
-  await updateDoc(todoRef, updatedTodo);
+  await updateDoc(todoRef,updatedTodo);
   return { todoId, updatedTodo, groupId };
+})
+export const updateAllTask = createAsyncThunk('task/updateAllTask', async ({ userId, todoId, update }) => {
+  const todoRef = doc(db, `users/${userId}/userTask`, todoId);
+  console.log(update , 'firebase')
+  await updateDoc(todoRef,update);
+  return { todoId, update };
 })
 
 const initialState = {
   groups: [],
   tasksByGroup: {},
   allTask: [],
-  selectedGroupId: null,
+  selectedGroupId: '4task',
   groupStatus: 'idle',
   allTaskStatus: 'idle',
   todosByGroupStatus: {},
@@ -92,22 +97,23 @@ const taskSlice = createSlice({
           }
         });
       })
-      .addCase(fetchGroups.rejected, (state , action) => {
+      .addCase(fetchGroups.rejected, (state, action) => {
         state.groupStatus = 'failed';
-          state.error = action.error.message || 'Failed to fetch groups';
+        state.error = action.error.message || 'Failed to fetch groups';
       })
 
 
-      .addCase(fetchTodosByGroup.pending ,( state  , action )=> state.todosByGroupStatus[action.meta.arg.groupId]= 'loading')
-      .addCase(fetchTodosByGroup.fulfilled , (state , action) => {
-             const {groupId , todos} = action.payload
-         state.todosByGroupStatus[groupId] ='succeeded'
-        
-         state.tasksByGroup[groupId] = todos;
+      .addCase(fetchTodosByGroup.pending, (state, action) => {
+        state.todosByGroupStatus[action.meta.arg.groupId] = 'loading'
       })
-      .addCase(fetchTodosByGroup.rejected , (state , action) => {
-        state.todosByGroupStatus[action.meta.arg.groupId]= 'failed'
-         state.error = action.error.message || 'something unexpected happen'
+      .addCase(fetchTodosByGroup.fulfilled, (state, action) => {
+        const { groupId, todos } = action.payload
+        state.todosByGroupStatus[groupId] = 'succeeded'
+        state.tasksByGroup[groupId] = todos;
+      })
+      .addCase(fetchTodosByGroup.rejected, (state, action) => {
+        state.todosByGroupStatus[action.meta.arg.groupId] = 'failed'
+        state.error = action.error.message || 'something unexpected happen'
       })
 
 
@@ -116,6 +122,7 @@ const taskSlice = createSlice({
       })
       .addCase(fetchUserTask.fulfilled, (state, action) => {
         state.allTaskStatus = 'succeeded'
+        console.log(action.payload)
         state.allTask = action.payload
       })
 
@@ -124,30 +131,40 @@ const taskSlice = createSlice({
       })
       .addCase(addTodo.fulfilled, (state, action) => {
         const { groupId, id, ...todo } = action.payload
-        if (state.tasksByGroup[groupId]) {
-          state.tasksByGroup[groupId].push({ id, ...todo })
+        if (!state.tasksByGroup[groupId]) {
+          state.tasksByGroup[groupId] = [];
         }
+        state.tasksByGroup[groupId].push({ id, ...todo })
+
       })
 
       .addCase(deleteTodo.fulfilled, (state, action) => {
-        const { groupId, todoId } = action.payload
-
+        const { groupId, todoId } = action.payload;
         if (state.tasksByGroup[groupId]) {
-          const index = state.tasksByGroup[groupId].findIndex(todo => todo.id === todoId)
-          state.tasksByGroup[groupId].splice(index, 1);
+          state.tasksByGroup[groupId] = state.tasksByGroup[groupId].filter(todo => todo.id !== todoId);
+          state.allTask = state.allTask.filter(allTodo => todoId !== allTodo.id)
         }
       })
       .addCase(updateTodo.fulfilled, (state, action) => {
 
         const { groupId, todoId, updatedTodo } = action.payload
         if (state.tasksByGroup[groupId]) {
-          const index = state.tasksByGroup[groupId].findIndex(todo => todo.id === todoId)
+          let index = state.tasksByGroup[groupId].findIndex(todo => todo.id === todoId)
           if (index !== -1) {
             state.tasksByGroup[groupId][index] = { ...state.tasksByGroup[groupId][index], ...updatedTodo }
-          }
+                   }
         }
-
       })
+
+      .addCase(updateAllTask.fulfilled, (state, action) => {
+        const { todoId, update } = action.payload
+       
+          let index = state.allTask.findIndex(todo => todo.id === todoId)
+          if (index !== -1) {
+            state.allTask[index] = { ...state.allTask, ...update }
+             }  
+      })
+
       .addCase(addGroup.fulfilled, (state, action) => {
         state.groups.push(action.payload);
       })

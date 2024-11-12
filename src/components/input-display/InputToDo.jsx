@@ -21,79 +21,53 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const InputToDo = () => {
   const dispatch = useDispatch();
-  const groupId = useSelector(state=> state.toDo.selectedGroupId)
+  let groupId = useSelector(state=> state.toDo.selectedGroupId)
   const [open, setOpen] = useState(false)
-  const [form, setForm] = useState({})
-   const currentCatagory=useSelector(state=> state.toDo.selectedGroupId)
-  const initalState = {
-    title: '',
-    note: '',
-    dueDate: 'today',
-    repeat: 'none',
-    completed: false,
-    important: false,
-    catagory:currentCatagory,
-  }
-
-  useEffect(() => {
-    setForm({
-      title: '',
-      note: '',
-      dueDate: 'today',
-      repeat: 'none',
-      completed: true,
-      important: true,
-      catagory: currentCatagory
-    })
-
-  }, [currentCatagory])
+  const [form, setForm] = useState({ title: '', note: '', dueDate:new Date(), repeat: 'none', completed: false, important: false, category: groupId });
   const [pickDate, setPickDate] = useState(false);
+
 
   const handelOpen = () => setOpen(true)
   const handelClose = () => setOpen(false)
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    if (name === 'dueDate' && value === 'pickdate')
-      setPickDate(true)
-    else {
-      setPickDate(false)
-      setForm((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    if (name === 'dueDate' && value === 'pickdate') {
+      setPickDate(true);
+    } else {
+      setPickDate(false);
+      setForm(prev => ({ ...prev, [name]: value }));
     }
-  }
+  };
 
   const calculateDate = (value) => {
     const now = new Date();
     let dueDate;
-
-    if (value === 'today') {
-      dueDate = now;
-    } else if (value === 'tomorrow') {
-      dueDate = addDays(now, 1);
-    } else if (value === 'next-week') {
-      dueDate = addDays(now, 7);
-    }
-
-    return dueDate.toISOString();
+    if (value === 'today') dueDate = new Date();
+    else if (value === 'tomorrow') dueDate = addDays(now ,1);
+    else if (value === 'next-week') dueDate = addDays(now , 7);
+    return dueDate ? dueDate.toISOString() : null;
   };
-  const handelSubmit = (e) => {
-    e.preventDefault()
 
-    const calculatedDueDate = calculateDate(form.dueDate)
-    let updatedForm = form;
-    if (calculatedDueDate) {
-      updatedForm = { ...updatedForm, dueDate: calculatedDueDate };
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(groupId === '1myday' || groupId === '2important') {
+      groupId='4task';
     }
-
-  const send = {userId:1 ,groupId , todo:form}
-    if (form) {
-      dispatch(addTodo(send))
-      handelClose()
-      setForm(initalState)
-     
-    }
-  }
+    const updatedForm = {
+      ...form,
+      category:groupId,
+      dueDate: calculateDate(form.dueDate) || form.dueDate.toISOString,
+    };
+   
+    dispatch(addTodo({
+      userId: 1,
+      groupId,
+      todo: updatedForm,
+    }));
+    setForm({ title: '', note: '', dueDate: new Date(), repeat: 'none', completed: false, important: false, category: groupId });
+    handelClose();
+  };
 
   const SelectBox = (menuList, title, name) => {
     return (
@@ -122,7 +96,7 @@ const InputToDo = () => {
 
   return (
     <div>
-      <Tooltip title='Add new task my lettle sweet girl '>
+      <Tooltip title='Add new task  '>
         <Fab onClick={handelOpen}>
           <AddIcon />
         </Fab>
@@ -136,12 +110,11 @@ const InputToDo = () => {
           Add Task
         </DialogTitle>
         <DialogContent >
-          <form onSubmit={handelSubmit} className="flex flex-col space-y-6">
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
             <TextField
               variant="filled"
-              label="task title"
+              label="title"
               name="title"
-              id="title"
               required
               onChange={handleChange}
               value={form.title}
@@ -157,25 +130,30 @@ const InputToDo = () => {
               }}
             />
             <Divider />
-            {SelectBox([`today`, `tomorrow`, `next-week`, 'pickDate'], 'Set due ', 'dueDate')}
+            {SelectBox([`today`, `tomorrow`, `next-week`, 'pickDate'], 'Set due date', 'dueDate')}
             {SelectBox(['none', 'daily', 'weekly', 'monthly', 'custom'], 'Repete', 'repeat')}
-            <TextField placeholder="Add Note" />
-            <Button variant='contained' type="submit" >Add</Button>
+            <TextField
+              label="Task Description"
+              name="note"
+              value={form.note}
+              onChange={handleChange}
+            />   
+                 {pickDate && (
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={form.dueDate !== 'pickdate' ? form.dueDate :null}
+                  onChange={(date) => setForm(prev => ({ ...prev, dueDate: date.toISOString }))}
+                />
+              </LocalizationProvider>
+            )}
+            <Button type="submit" variant="contained">Add</Button>
           </form>
+
         </DialogContent>
       </Dialog>
-      {pickDate &&
-        (
-          <div className="h-screen w-screen z-50 bg-black bg-opacity-40 flex items-center justify-center">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker label="Basic date picker" onChange={(date) => setForm((prev) => ({ ...prev, dueDate: date }))}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
+
+       
           </div>
-        )}
-    </div>
   )
 }
 export default InputToDo
