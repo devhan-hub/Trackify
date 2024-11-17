@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import TodoDisplay from '../input-display/TodoDisplay.js';
+import TodoDisplay from './TodoDisplay.js';
 import Typography from '@mui/material/Typography';
-import InputToDo from '../input-display/InputToDo.jsx';
+import InputToDo from './InputToDo.jsx';
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector } from 'react-redux';
@@ -11,7 +11,6 @@ import {  isToday, parseISO } from 'date-fns';
 const Myday = ({ todos }) => {
   const groups = useSelector(state => state.toDo.groups)
   const typeCategory = useSelector(state => state.toDo.selectedGroupId);
-  // const { catagory } = useParams(); // Capture the category from URL
 
   const [displayedCompleted, setDisplayCompleted] = useState([]); 
   const [displayedInCompleted, setDisplayInCompleted] = useState([]); 

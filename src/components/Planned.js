@@ -1,7 +1,7 @@
 import React from 'react';
-import TodoDisplay from '../input-display/TodoDisplay.js';
+import TodoDisplay from './TodoDisplay.js';
 import Typography from '@mui/material/Typography';
-import InputToDo from '../input-display/InputToDo.jsx';
+import InputToDo from './InputToDo.jsx';
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ListAltOutlined } from "@mui/icons-material"
@@ -24,6 +24,7 @@ const AccordianList =({day , tasks})=> {
 const Planned = ({todos}) => {
  
  const dispach= useDispatch();
+//   i ned to catagorize task earlier , yesterday , today , tommorow and later' 
   const todayTask = todos?.filter((task) => task.dueDate === 'today')
   const tomorrowTask = todos?.filter((task) => task.dueDate === 'tomorrow')
   const yesterdaytask = todos?.filter((task) => task.dueDate === 'next-week')

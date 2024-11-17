@@ -5,7 +5,7 @@ import Star from '@mui/icons-material/Star';
 import { CircleOutlined, CheckCircle, Repeat } from "@mui/icons-material"
 import CalendarToday from '@mui/icons-material/CalendarMonthTwoTone'
 import { useDispatch, useSelector } from "react-redux";
-import { updateTodo  ,updateAllTask} from '../feature/TasksAddSlice'
+import { updateTodo  ,updateAllTask} from '../Redux/TasksAddSlice'
 import { format, isAfter, isBefore, isToday, isTomorrow, isYesterday, parseISO, subDays, startOfDay } from 'date-fns';
 import { useEffect, useState } from "react";
 import { Stat } from "@chakra-ui/react";

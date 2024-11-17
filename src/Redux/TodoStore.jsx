@@ -1,8 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit'
-import todoReducer from '../feature/TasksAddSlice.jsx'
+import todoReducer from './TasksAddSlice'
+import userReducer from './User';
  const store = configureStore({
     reducer:{
         toDo:todoReducer,
+        user:userReducer
     }
  })
 

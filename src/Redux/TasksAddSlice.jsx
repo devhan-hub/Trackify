@@ -1,10 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { db } from '../../config/firebaseConfig'
+import { db, auth } from '../Utiles/firebaseConfig'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, setDoc } from 'firebase/firestore'
+ 
+
 
 
 
 //all todoes of spacfic group
+
 export const fetchTodosByGroup = createAsyncThunk('task/fetchTodosByGroup', async ({ userId, groupId }) => {
   const todosCol = collection(db, `users/${userId}/groups/${groupId}/todos`);
   const todosSnapshot = await getDocs(todosCol);
@@ -26,7 +30,7 @@ export const fetchUserTask = createAsyncThunk('task/fetchUserTask', async (userI
 
 export const addUserTask = createAsyncThunk('task/addUserTask', async ({ userId, todo, id }) => {
   const userTaskDocRef = doc(db, `users/${userId}/userTask`, id);
-  await setDoc(userTaskDocRef,todo)
+  await setDoc(userTaskDocRef, todo)
   return { id, ...todo }
 })
 
@@ -38,6 +42,7 @@ export const addGroup = createAsyncThunk('task/addgroup', async ({ userId, group
 
 export const addTodo = createAsyncThunk('task/addTodo', async ({ userId, groupId, todo }, { dispatch }) => {
   const todosCol = collection(db, `users/${userId}/groups/${groupId}/todos`);
+  console.log('alw')
   const docRef = await addDoc(todosCol, todo);
   await dispatch(addUserTask({ userId, todo, id: docRef.id }));
   return { groupId, id: docRef.id, ...todo }
@@ -51,13 +56,13 @@ export const deleteTodo = createAsyncThunk('task/deleteTodo', async ({ userId, t
 
 export const updateTodo = createAsyncThunk('task/updateTodo', async ({ userId, todoId, updatedTodo, groupId }) => {
   const todoRef = doc(db, `users/${userId}/groups/${groupId}/todos`, todoId);
-  await updateDoc(todoRef,updatedTodo);
+  await updateDoc(todoRef, updatedTodo);
   return { todoId, updatedTodo, groupId };
 })
 export const updateAllTask = createAsyncThunk('task/updateAllTask', async ({ userId, todoId, update }) => {
   const todoRef = doc(db, `users/${userId}/userTask`, todoId);
-  console.log(update , 'firebase')
-  await updateDoc(todoRef,update);
+  console.log(update, 'firebase')
+  await updateDoc(todoRef, update);
   return { todoId, update };
 })
 
@@ -70,6 +75,8 @@ const initialState = {
   allTaskStatus: 'idle',
   todosByGroupStatus: {},
   error: null,
+  userDetail: {},
+  loginStatus: 'idle'
 };
 
 const taskSlice = createSlice({
@@ -78,12 +85,13 @@ const taskSlice = createSlice({
   reducers: {
     setSelectedGroup(state, action) {
       state.selectedGroupId = action.payload;
+    },
+    reset(state ) {
+       return initialState
     }
   },
   extraReducers: builder => {
     builder
-
-
       .addCase(fetchGroups.pending, (state) => {
         state.groupStatus = 'loading';
       })
@@ -152,17 +160,17 @@ const taskSlice = createSlice({
           let index = state.tasksByGroup[groupId].findIndex(todo => todo.id === todoId)
           if (index !== -1) {
             state.tasksByGroup[groupId][index] = { ...state.tasksByGroup[groupId][index], ...updatedTodo }
-                   }
+          }
         }
       })
 
       .addCase(updateAllTask.fulfilled, (state, action) => {
         const { todoId, update } = action.payload
-       
-          let index = state.allTask.findIndex(todo => todo.id === todoId)
-          if (index !== -1) {
-            state.allTask[index] = { ...state.allTask, ...update }
-             }  
+
+        let index = state.allTask.findIndex(todo => todo.id === todoId)
+        if (index !== -1) {
+          state.allTask[index] = { ...state.allTask, ...update }
+        }
       })
 
       .addCase(addGroup.fulfilled, (state, action) => {
@@ -178,6 +186,6 @@ const taskSlice = createSlice({
   }
 });
 
-export const { setSelectedGroup } = taskSlice.actions
+export const { setSelectedGroup , reset } = taskSlice.actions
 export const selectGroup = state => (state.toDo.groups)
 export default taskSlice.reducer;

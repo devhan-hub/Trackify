@@ -2,7 +2,8 @@ import { Drawer, Divider, List, ListItem, ListItemIcon, ListItemText, TextField,
 import { BsSun } from "react-icons/bs";
 import { StarOutline, ListAltOutlined, HouseOutlined, Add as AddIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { selectGroup, addGroup , setSelectedGroup,fetchGroups } from '../feature/TasksAddSlice';
+import { selectGroup, addGroup , setSelectedGroup,fetchGroups} from '../Redux/TasksAddSlice';
+import { selectUserId } from "../Redux/User";
 import { Link } from "react-router-dom";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { useEffect, useState } from "react";
@@ -18,7 +19,7 @@ const Sidebar = ({userId}) => {
 
   useEffect(()=> {
     if(groupStatus ==='idle') {
-      dispatch(fetchGroups(1))
+      dispatch(fetchGroups(userId))
     }
    
   },[ dispatch , userId , groupStatus])
@@ -31,7 +32,7 @@ const Sidebar = ({userId}) => {
 
   const handelSave = () => {
     if (newCatagoryName) {
-      dispatch(addGroup({ userId: 1, group: {name: newCatagoryName } }));
+      dispatch(addGroup({ userId, group: {name: newCatagoryName } }));
       setNewCatagoryName('');
       setEditingCategory(null);
     }

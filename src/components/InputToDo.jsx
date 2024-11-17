@@ -3,7 +3,8 @@ import AddIcon from '@mui/icons-material/Add'
 import { CircleOutlined, CheckCircle, Star, StarBorder, MailRounded } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { addTodo } from '../feature/TasksAddSlice.jsx'
+import {  selectUserId} from '../Redux/User.jsx'
+import {addTodo} from '../Redux/TasksAddSlice.jsx'
 import { Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import Fab from '@mui/material/Fab'
 import Checkbox from "@mui/material/Checkbox";
@@ -21,11 +22,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const InputToDo = () => {
   const dispatch = useDispatch();
+  const userId = useSelector(selectUserId);
   let groupId = useSelector(state=> state.toDo.selectedGroupId)
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState({ title: '', note: '', dueDate:new Date(), repeat: 'none', completed: false, important: false, category: groupId });
   const [pickDate, setPickDate] = useState(false);
-
+console.log(userId)
 
   const handelOpen = () => setOpen(true)
   const handelClose = () => setOpen(false)
@@ -61,7 +63,7 @@ const InputToDo = () => {
     };
    
     dispatch(addTodo({
-      userId: 1,
+      userId,
       groupId,
       todo: updatedForm,
     }));
