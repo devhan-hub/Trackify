@@ -1,20 +1,54 @@
 import Paper from "@mui/material/Paper"
 import Checkbox from '@mui/material/Checkbox';
-import StarOutlined from '@mui/icons-material/StarBorder';
-import Star from '@mui/icons-material/Star';
 import { CircleOutlined, CheckCircle, Repeat } from "@mui/icons-material"
-import CalendarToday from '@mui/icons-material/CalendarMonthTwoTone'
 import { useDispatch, useSelector } from "react-redux";
 import { updateTodo  ,updateAllTask} from '../Redux/TasksAddSlice'
-import { format, isAfter, isBefore, isToday, isTomorrow, isYesterday, parseISO, subDays, startOfDay } from 'date-fns';
-import { useEffect, useState } from "react";
-import { Stat } from "@chakra-ui/react";
+import { format, isToday, isTomorrow, isYesterday, parseISO } from 'date-fns';
+import { styled } from '@mui/material/styles';
+import {Grid , Typography ,ButtonBase} from '@mui/material'
 
-const TodoDisplay = ({ tasks = [] }) => {
+const Img = styled('img')({
+  margin: 'auto',
+  display: 'block',
+  maxWidth: '100%',
+  maxHeight: '100%',
+  borderRadius: '10px'
+});
+
+
+const getDateStatue = (dueDate) => {
+  if (!dueDate) return '';
+  const parsedDate = parseISO(dueDate);
+  if (isToday(parsedDate)) return 'Today';
+  if (isTomorrow(parsedDate)) return 'Tomorrow';
+  if (isYesterday(parsedDate)) return 'Yesterday';
+  return format(parsedDate, 'E , M dd');
+}
+
+
+const priorityColor = (value) => {
+  switch (value) {
+    case 'low':
+      return 'text-[#32CD32]'
+      break;
+    case 'medium':
+      return 'text-[#a8d8f2]'
+      break;
+    case 'high':
+      return 'text-[#FF4500]'
+      break;
+    default:
+      return 'text-[#1E90FF]'
+      break;
+  }
+}
+
+
+export default function TodoDisplay({todo , all}) {
   const dispatch = useDispatch();
   const groupId = useSelector(state => state.toDo.selectedGroupId)
 
-  const [updatedTasks, setUpdatedTasks] = useState([]);
+
 
   const handelUpdate = (update, todoId) => {
     if(groupId ==='1myday' || groupId === '1important') {
@@ -25,64 +59,69 @@ const TodoDisplay = ({ tasks = [] }) => {
     }
   }
 
-  const getDateStatue = (dueDate) => {
-    if (!dueDate) return '';
-    const parsedDate = parseISO(dueDate);
-    if (isToday(parsedDate)) return 'Today';
-    if (isTomorrow(parsedDate)) return 'Tomorrow';
-    if (isYesterday(parsedDate)) return 'Yesterday';
-    return format(parsedDate, 'E , M dd');
-  }
 
-  useEffect(() => {
+    return (
+      <Paper
+        sx={(theme) => ({
+          p: 2,
+          margin: 'auto',
+           maxWidth:all?500:400,
+           
+          flexGrow: 1,
+          backgroundColor: '#fff',
+          ...theme.applyStyles('dark', {
+            backgroundColor: '#1A2027',
+          }),
+        })}
+      >
+        <div className='flex  items-start gap-1 '>
+          <Checkbox checked={todo.completd} icon={<CircleOutlined />} checkedIcon={<CheckCircle />}
+            sx={{
+              color: 'red',
+              '&.Mui-checked': {
+                color:'green',
+              }
+            }}
+          />
+          <Grid container spacing={2} justifyContent={'space-between'} >
 
-    setUpdatedTasks(
-      tasks.slice().sort((a, b) => b.dueDate - a.dueDate)
-    );
-        const timeInterval = setInterval(() => {
-      const newUpdatedTask = updatedTasks.map((task) => {
-        return { ...task, dueDateStatus: getDateStatue(task.dueDate) }
-      })
-      setUpdatedTasks(newUpdatedTask)
-    }, 3600000)
-    return () => clearInterval(timeInterval)
-  }, [ tasks])
+            <Grid item xs={12} sm container >
+              <Grid item xs container direction="column" spacing={2}>
+                <Grid item xs>
+                  <Typography gutterBottom variant="h6" component="div" className="font-bold capitalize">
+                    {todo.title}
+                  </Typography>
+                  <Typography variant="body2" gutterBottom>
+                    {todo.description.length > 50 ? todo.description.slice(0, 100) + '...' : todo.description}
+                  </Typography>
 
-  return (
+                </Grid>
+                <Grid item container justifyContent={'space-between'} alignItems={'center'}>
+                  <Grid item >
+                    <Typography sx={{ cursor: 'pointer' }} variant="body2" >
+                      priority: <span className={`${priorityColor(todo.priority)}`}>{todo.priority}</span>
+                    </Typography>
+                  </Grid>
+                  <Grid item className='text-black text-opacity-45'>DueDate{todo.duedate}</Grid >
+                  <Grid item className="capitalize  " >Status: <span className={` ${todo.completd?'text-green-500':'text-red-600'} font-bold`}> {todo.completd?'completed':'incomplete'}</span></Grid >
 
-    <div>
-
-      {updatedTasks && updatedTasks.map((task) =>
-
-      (<Paper key={`${task.id}`} className="flex justify-between ">
-        <div >
-          <Checkbox className='flex' checked={task.completed} icon={<CircleOutlined />} checkedIcon={<CheckCircle />} onClick={() => handelUpdate({ ...task, completed: !task.completed }, task.id)} />
-          <div className={`${task.completed ? 'line-through' : ''}`}>
-            {task.title}
-          </div>
-          <div className="-space-x-4 -mt-2">
-            <span className="p-12">{task.category
-            }</span>
-            <span className={task.dueDate && isAfter(new Date(task.dueDate), subDays(startOfDay(new Date()), 1)) &&
-              isBefore(new Date(task.dueDate), startOfDay(new Date())) ? 'text-red-500' : 'text-black'}>
-              <CalendarToday /> {task.dueDateStatus || getDateStatue(task.dueDate)}
-            </span>
-          </div>
+                </Grid>
+              </Grid>
+              <Grid item  >
+                <Grid item container justifyContent={'space-between'} alignItems={'center'} >
+                  <Grid item xs={12}>
+                    <ButtonBase sx={{ width: 128, height: 128 }}>
+                      <Img alt="complex" src={`${todo.image}`} />
+                    </ButtonBase>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
         </div>
-        <Checkbox className="ml-auto" checked={task.important} icon={<StarOutlined />} checkedIcon={<Star />} onClick={() => handelUpdate({ ...task, important:!task.important }, task.id)} />
-
       </Paper>
-      )
-      )}
-    </div>
-  )
-
-}
-
-export default TodoDisplay;
-
-
-
+    );
+  }
 
 
 
