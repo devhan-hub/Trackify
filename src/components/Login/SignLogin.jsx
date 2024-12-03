@@ -29,9 +29,9 @@ const SignLogin = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [mobileLogin, setMobileLogin] = useState(false);
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const signinStatus = useSelector(state => state.user.signinStatus)
     const signupStatus = useSelector(state => state.user.signupStatus)
+    const navigate= useNavigate();
 
 
     const handleToggle = () => {
@@ -47,26 +47,29 @@ const SignLogin = () => {
         firstName: !isLogin ? Yup.string().required('First name is required') : Yup.string(),
     });
 
+    
+
     const handleSubmit = async (values) => {
         if (isLogin) {
 
             try {
                 const userId = await dispatch(signInUser({ email: values.email, password: values.password })).unwrap();
 
-                dispatch(getDetailUser(userId));
-                navigate('/');
+               await dispatch(getDetailUser(userId)).unwrap();
+                navigate('/')
             } catch (error) {
-                console.error("Error during submission:", error); // Log the error
+                console.error("Error during submission:", error);
             }
 
         } else {
             try {
                 const userId = await dispatch(signUpUser({ firstName: values.firstName, email: values.email, password: values.password })).unwrap();
-                console.log(" i am here");
-                dispatch(getDetailUser(userId));
-                navigate('/');
+              
+                await dispatch(getDetailUser(userId)).unwrap();
+                navigate('/')
+           
             } catch (error) {
-                console.error("Error during submission:", error); // Log the error
+                console.error("Error during submission:", error);
             }
         }
     };
