@@ -10,6 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import dayjs from "dayjs";
+import InputToDo from "./inputTask/InputToDo";
+import { useEffect, useState } from "react";
 
 const Img = styled('img')({
   margin: 'auto',
@@ -60,23 +62,21 @@ const priorityColor = (value) => {
 }
 
 
-export default function Display({ todo }) {
-  const dispatch = useDispatch();
+export default function Display({ todoId , allTask }) {
   const groupId = useSelector(state => state.toDo.selectedGroupId)
+ const [isEdit , setIsEdit]=useState(false)
+ const[todo,setTodo]= useState(null)
+ const[openInputDialog , setOpenInputDialog]= useState(false)
 
 
+ useEffect(()=>{
+   setTodo(allTask.find((todo) => todo.id === todoId))
 
-  const handelUpdate = (update, todoId) => {
-    if (groupId === '1myday' || groupId === '1important') {
-      dispatch(updateAllTask({ update, todoId, userId: 1 }))
-    }
-    else {
-      dispatch(updateTodo({ userId: 1, todoId, updatedTodo: update, groupId }))
-    }
-  }
+ },[allTask , todoId])
 
-
+ if(todo) {
   return (
+   
     <Container
       sx={(theme) => ({
         p: 2,
@@ -97,6 +97,8 @@ export default function Display({ todo }) {
 
     >
      
+         {isEdit && <InputToDo todo={todo} isEdit={isEdit} setIsEdit={setIsEdit} open={openInputDialog} setOpen={setOpenInputDialog}/>}
+        
 
       <Grid container  spacing={4}  >
 
@@ -133,13 +135,13 @@ export default function Display({ todo }) {
       <IconButton sx={{backgroundColor:'#FF4B3F', color:'white' , scale:'1.1', '&:hover':{scale:'1' , backgroundColor:'#FF4B3F'} ,transition:'all' , transitionDuration:'.5s' }} className="transition-all duration-700">
       <DeleteIcon />
           </IconButton>
-          <IconButton sx={{backgroundColor:'#FF4B3F', color:'white' , scale:'1.1', '&:hover':{scale:'1' , backgroundColor:'#FF4B3F'} ,transition:'all' , transitionDuration:'.5s' }} className="transition-all duration-700">
+          <IconButton sx={{backgroundColor:'#FF4B3F', color:'white' , scale:'1.1', '&:hover':{scale:'1' , backgroundColor:'#FF4B3F'} ,transition:'all' , transitionDuration:'.5s' }} className="transition-all duration-700" onClick={()=>{setIsEdit(true) ;setOpenInputDialog(true)}}>
             <Edit />
           </IconButton>
         </div>
 
     </Container>
-  );
+  );}
 }
 
 

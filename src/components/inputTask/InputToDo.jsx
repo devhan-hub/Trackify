@@ -4,7 +4,7 @@ import { Circle, Close } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserId } from '../../Redux/User.jsx'
-import { addTodo } from '../../Redux/TasksAddSlice.jsx'
+import { addTodo  , updateAllTask} from '../../Redux/TasksAddSlice.jsx'
 import { Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import Checkbox from "@mui/material/Checkbox";
 import Box from '@mui/material/Box';
@@ -17,26 +17,46 @@ import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import UploadImage from "./UploadImage.js";
 import { Timestamp } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 
 
-const InputToDo = () => {
+const InputToDo = ({isEdit , todo , setIsEdit , open , setOpen}) => {
   const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
   let groupId = useSelector(state => state.toDo.selectedGroupId)
-  const [open, setOpen] = useState(false)
+  const [todoId , setTodoId]= useState(null)
   const [file, setFile] = useState(null);
   const [priority, setPriority] = useState('none');
   const [checkedPriority, setCheckedPriority] = useState(false)
-  const [form, setForm] = useState({ title: '', description: '', priority: 'none', dueDate: dayjs(), catagory: '4task', image: 'Images/doit.jpg' });
+  const [form, setForm] = useState('');
 
 
-
+  useEffect(()=>{ 
+    if(!isEdit){
+      initalForm()
+    }
+    else {
+      if(todo)
+      { 
+      
+        let {id ,dueDate, ...rest}= todo;
+        dueDate=dayjs(dueDate.toDate())
+      
+        setForm({dueDate ,...rest})
+        setTodoId(id);
+      }
+    
+    }
+     }
+  , [todo]);
   const handelClose = () => { setOpen(false); setFile(null) }
   const handelCloseAll = () => { setOpen(false); }
-  const handelOpen = () => setOpen(true)
+  
+ const initalForm =()=>{
+  setForm({ title: '', description: '', priority: 'none', dueDate:dayjs(), catagory: '4task', image: 'Images/doit.jpg',completed:false });
 
-
+ }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +69,7 @@ const InputToDo = () => {
     
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit =async (e) => {
     e.preventDefault();
     const updatedForm = {
       ...form,
@@ -58,13 +78,36 @@ const InputToDo = () => {
       image: file?file:form.image,
     };
 
-    dispatch(addTodo({
-      userId,
-      groupId: '4task',
-      todo: updatedForm,
-    }));
-    setForm({ title: '', description: '', priority: 'none', dueDate:new Date(), catagory: '4task', image: 'Images/doit.jpg' });
-    handelClose();
+    if(isEdit){
+      try{
+        await dispatch(updateAllTask({userId, todoId, update:updatedForm})).unwrap()
+        initalForm()
+        handelClose();
+        toast.success('successfully edited')
+    }
+    catch{
+      toast.error('unable to edit')  
+    }
+
+    }
+
+    else {
+      try{
+        await dispatch(addTodo({
+        userId,
+        groupId: '4task',
+        todo: updatedForm,
+      })).unwrap();
+      initalForm()
+      handelClose();
+      toast.success('successfully added')
+    }
+    catch{
+      toast.error('unable to add')  
+    }
+    }
+   
+  
   };
 
   const handelPriorityChange = (selectedpriority) => {
@@ -77,17 +120,11 @@ const InputToDo = () => {
       setPriority(selectedpriority);
     }
   }
-
+console.log(todo,'todo')
 
   return (
     <div >
-      <Tooltip title='Add new task  '>
-        <ButtonBase onClick={handelOpen}>
-          <AddIcon className="text-[#ff6867]" /> Add Task
-        </ButtonBase>
-      </Tooltip>
-
-
+      
       <Dialog
         fullWidth={true}
         open={open}
@@ -99,7 +136,7 @@ const InputToDo = () => {
       >
         <div className='flex flex-col gap-4 p-4'>
           <DialogTitle className="flex justify-between items-center">
-            <p className='underline decoration-slice decoration-[#ff6867] text-[18px]'> Add New Task</p>
+            <p className='underline decoration-slice decoration-[#ff6867] text-[18px]'>{isEdit?'Edit the Task': 'Add New Task'}</p>
             <Button onClick={handelCloseAll} sx={{ color: 'black', fontSize: '16px', textTransform: "capitalize" }}>
               GoBack
             </Button>
