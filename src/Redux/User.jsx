@@ -4,7 +4,7 @@ import { setDoc, doc, getDoc } from "firebase/firestore";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { collection } from 'firebase/firestore';
 import { toast } from 'react-toastify';
-export const signUpUser = createAsyncThunk('task/signUpUser', async ({  firstName, lastName, email, password }) => {
+export const signUpUser = createAsyncThunk('task/signUpUser', async ({  firstName, email, password }) => {
  
 
   await createUserWithEmailAndPassword(auth, email, password)
@@ -15,7 +15,6 @@ export const signUpUser = createAsyncThunk('task/signUpUser', async ({  firstNam
     await setDoc(docRef , {name:'task'})
     await setDoc(doc(db, 'users', user.uid), {
       firstName: firstName,
-      lastName: lastName,
       email
     })
 
@@ -40,12 +39,14 @@ export const getDetailUser = createAsyncThunk('task/getDetailUser', async (uid) 
       
     }
    })
+
    
   
  const initialState ={
     userDetail:{},
     signinStatus:'idle',
     signupStatus:'idle',
+    loading:true,
     error:''
   
 }
@@ -57,6 +58,8 @@ const userSlice = createSlice({
         logoutUser:(state) => {
             state.userDetail={};
             state.status= 'idle';
+            state.signinStatus="idle";
+            state.signupStatus="idle";
             state.error=''
         }
     },
@@ -64,42 +67,51 @@ const userSlice = createSlice({
         builder
         .addCase(signUpUser.pending, (state) => {
             state.signupStatus = 'loading'
+          ;
           })
           .addCase(signUpUser.fulfilled, (state, action) => {
-              state.signupStatus = 'succeeded'
-              toast.success('sign up successfully')
-             
+              state.signupStatus = 'succeeded';
+                state.error=''
+              toast.success("sign up successfully")
           })
           .addCase(signUpUser.rejected, (state , action) => {
             state.signupStatus = 'failed'
             state.error= action.error.message
             toast.error(`fail to sign up ${action.payload}`)
-
           })
     
           .addCase(signInUser.pending, (state) => {
             state.signinStatus = 'loading'
+            
           })
           .addCase(signInUser.fulfilled, (state, action) => {
                state.signinStatus = 'succeeded'
-               toast.success('sign in successfully')
-           
+               state.error=''
+               toast.success("sign in successfully")
           })
           .addCase(signInUser.rejected, (state ,action) => {
             state.signinStatus = 'failed'
             state.error= action.error.message
             toast.error(`fail to sign in ${action.payload}`)
           })
-
+          .addCase(getDetailUser.pending , (state , action ) => {
+            state.loading= true;
+})
           .addCase(getDetailUser.fulfilled , (state , action ) => {
-               
-               state.userDetail = action.payload
+                   state.loading= false;
+                     state.error=''
+                     state.userDetail = action.payload
           })
+          .addCase(getDetailUser.rejected , (state , action ) => {
+            state.loading= false;
+})
     }
 })
 
 export const {logoutUser} =userSlice.actions 
 export const selectUserId = (state => state.user?.userDetail?.id)
+export const isLoading = (state => state.user?.userDetail?.loading)
+
 export default userSlice.reducer;
 
 
