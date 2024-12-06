@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Delete, Edit } from '@mui/icons-material';
-import { Dialog , DialogContent , DialogActions , DialogTitle , Button ,IconButton, Typography } from "@mui/material";
+import { Button ,IconButton, Typography } from "@mui/material";
 import { toast } from 'react-toastify';
 import useGroupManager from '../../hooks/useGroupManager';
+import DeleteDialog from '../DeleteDialog';
 
 const  CatagoryGrid = ({ catagory, onClick, setCatagory, setOpen, setIsEdit, userId }) => {
     const {deleteGroupById} = useGroupManager(userId)
@@ -23,17 +24,8 @@ const  CatagoryGrid = ({ catagory, onClick, setCatagory, setOpen, setIsEdit, use
     }
     return (
         <>
-            <Dialog
-                open={openDeleteDialog}
-                onClose={() => setOpenDeleteDialog(false)}>
-                <DialogTitle>Delete</DialogTitle>
-                <DialogContent>Do you want to delete the  '{catagory?.name}' catagory?</DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenDeleteDialog(false)}>CANCEL</Button>
-                    <Button onClick={handelDelete}>Delete</Button>
-                </DialogActions>
-            </Dialog>
-
+        <DeleteDialog handelDelete={handelDelete} content={`${catagory.name} Catagory`} open={openDeleteDialog} setOpen={setOpenDeleteDialog}/>
+          
             <div className=' card  h-[150px] w-[240px]  bg-[#ff6867]  rounded-tl-[30px]   relative border-black overflow-hidden'  >
 
                 <div className='box  inset-[2px] absolute rounded-[10px] m-auto  bg-white  '>
