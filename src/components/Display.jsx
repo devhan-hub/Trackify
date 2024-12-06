@@ -1,9 +1,5 @@
-import Paper from "@mui/material/Paper"
-import Checkbox from '@mui/material/Checkbox';
-import { CircleOutlined, CheckCircle, Repeat, Edit } from "@mui/icons-material"
-import { useDispatch, useSelector } from "react-redux";
-import { updateTodo, updateAllTask } from '../Redux/TasksAddSlice'
-import { format, isToday, isTomorrow, isYesterday, parseISO , startOfDay } from 'date-fns';
+
+import { format, isToday, isTomorrow, isYesterday, parseISO  } from 'date-fns';
 import { styled } from '@mui/material/styles';
 import { Grid, Typography, ButtonBase, Container } from '@mui/material'
 import IconButton from '@mui/material/IconButton';
@@ -12,6 +8,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import dayjs from "dayjs";
 import InputToDo from "./inputTask/InputToDo";
 import { useEffect, useState } from "react";
+import DeleteDialog from "./DeleteDialog";
+import useTaskManager from '../hooks/useTaskManager'
+import { toast } from "react-toastify";
 
 const Img = styled('img')({
   margin: 'auto',
@@ -62,17 +61,31 @@ const priorityColor = (value) => {
 }
 
 
-export default function Display({ todoId , allTask }) {
-  const groupId = useSelector(state => state.toDo.selectedGroupId)
+export default function Display({ todoId , allTask ,groupId , userId }) {
  const [isEdit , setIsEdit]=useState(false)
  const[todo,setTodo]= useState(null)
  const[openInputDialog , setOpenInputDialog]= useState(false)
+ const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+ const {deleteTodoById} = useTaskManager(userId ,groupId)
 
 
  useEffect(()=>{
    setTodo(allTask.find((todo) => todo.id === todoId))
 
  },[allTask , todoId])
+
+ const handelDelete= async ()=>{
+  const success = await deleteTodoById(groupId , todoId)
+  if(success){
+    toast.success('permantely deleted')
+    setOpenDeleteDialog(false)
+}
+else {
+    setOpenDeleteDialog(false)
+    toast.error('unabe to delete')
+}
+     
+ }
 
  if(todo) {
   return (
@@ -96,8 +109,8 @@ export default function Display({ todoId , allTask }) {
       })}
 
     >
-     
-         {isEdit && <InputToDo todo={todo} isEdit={isEdit} setIsEdit={setIsEdit} open={openInputDialog} setOpen={setOpenInputDialog}/>}
+        <DeleteDialog handelDelete={handelDelete} content={`' ${todo.title}' Task`} open={openDeleteDialog} setOpen={setOpenDeleteDialog}/>
+        {isEdit && <InputToDo todo={todo} isEdit={isEdit} setIsEdit={setIsEdit} open={openInputDialog} setOpen={setOpenInputDialog} groupId={groupId}/>}
         
 
       <Grid container  spacing={4}  >
@@ -132,11 +145,11 @@ export default function Display({ todoId , allTask }) {
       </Grid> 
 
       <div item container alignSelf={'self-end'} className='flex justify-end gap-6 mt-6'>
-      <IconButton sx={{backgroundColor:'#FF4B3F', color:'white' , scale:'1.1', '&:hover':{scale:'1' , backgroundColor:'#FF4B3F'} ,transition:'all' , transitionDuration:'.5s' }} className="transition-all duration-700">
+      <IconButton sx={{backgroundColor:'#FF4B3F', color:'white' , scale:'1.1', '&:hover':{scale:'1' , backgroundColor:'#FF4B3F'} ,transition:'all' , transitionDuration:'.5s' }} className="transition-all duration-700" onClick={()=> setOpenDeleteDialog(true)}>
       <DeleteIcon />
           </IconButton>
           <IconButton sx={{backgroundColor:'#FF4B3F', color:'white' , scale:'1.1', '&:hover':{scale:'1' , backgroundColor:'#FF4B3F'} ,transition:'all' , transitionDuration:'.5s' }} className="transition-all duration-700" onClick={()=>{setIsEdit(true) ;setOpenInputDialog(true)}}>
-            <Edit />
+            <EditIcon />
           </IconButton>
         </div>
 

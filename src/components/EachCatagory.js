@@ -1,22 +1,19 @@
-
 import { useEffect, useState } from "react";
-
-import { useDispatch, useSelector } from "react-redux";
-import { fetchTodosByGroup, fetchUserTask } from "../Redux/TasksAddSlice.jsx";
+import {  useSelector } from "react-redux";
 import SideDrawer from './SideDrawer.jsx'
 import Navbar from './Navbar.js'
 import { Box } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
-import Checkbox from '@mui/material/Checkbox';
-import { ListAltOutlined, Add as AddIcon } from "@mui/icons-material";
+import {  Add as AddIcon } from "@mui/icons-material";
 import { format, toDate } from 'date-fns';
 import TodoDisplay from './TodoDisplay.js'
 import InputToDo from "./inputTask/InputToDo.jsx";
 import Display from "./Display.jsx";
 import Tooltip from '@mui/material/Tooltip';
 import { useParams } from "react-router-dom";
+import useTaskManager from "../hooks/useTaskManager.jsx";
 
 
 
@@ -27,29 +24,15 @@ const TodayDate = () => {
 
 const EachCatagory = ({ userId }) => {
   const { groupId } = useParams();
-  const dispatch = useDispatch();
+  const {tasksInGroup:todos } = useTaskManager(userId,groupId)
   const groups=useSelector((state)=>state.toDo.groups)
   const [openInputDialog, setOpenInputDialog] = useState(false)
-  const todosByGroupStatus = useSelector(state => state.toDo.todosByGroupStatus);
-  const todos = useSelector(state => state.toDo.tasksByGroup[groupId]) || [];
   const[name , setName]= useState('Untitled')
   const [selectedTodoId, setSelectedTOdoId] = useState(
-    todos?.length !== 0 ? todos[0].id : ''
+    // todos?.length !== 0 ? todos[0].id : ''
+    ''
   );
 
-
-
-
-
-  useEffect(() => {
-
-    if (groupId) {
-      if (todosByGroupStatus[groupId] === "idle") {
-        dispatch(fetchTodosByGroup({ userId, groupId }))
-      }
-    }
-
-  }, [userId, groupId, todosByGroupStatus, , dispatch]);
 
   useEffect(()=>{
      const selectedGroup=groups.find((group)=>group.id === groupId)
@@ -90,7 +73,7 @@ const EachCatagory = ({ userId }) => {
                   </ButtonBase>
                   </Grid>
               </Grid>
-              <InputToDo open={openInputDialog} setOpen={setOpenInputDialog} groupId={groupId}/>
+              <InputToDo open={openInputDialog} setOpen={setOpenInputDialog} groupId={groupId} isEdit={false}/>
 
 
               {(todos?.length === 0 && todos )? (
@@ -117,7 +100,7 @@ const EachCatagory = ({ userId }) => {
 
 
           <Box item md={6} sx={12} className="sticky min-h-screen h-max top-[10px] border-black border-opacity-30 border-2  p-4 pb-6 self-start  w-full   ">
-            <Display todoId={selectedTodoId} allTask={todos} className=' shadow-2xl bg-white  ' />
+            <Display todoId={selectedTodoId} allTask={todos} groupId={groupId} userId={userId} className=' shadow-2xl bg-white  ' />
           </Box >
 
         </Box>

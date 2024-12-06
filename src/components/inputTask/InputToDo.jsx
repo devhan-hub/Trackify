@@ -1,36 +1,41 @@
 import { Button, TextField } from "@mui/material"
-import AddIcon from '@mui/icons-material/Add'
 import { Circle, Close } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserId } from '../../Redux/User.jsx'
-import { addTodo  , updateAllTask} from '../../Redux/TasksAddSlice.jsx'
+import { addTodo  , updateTodo} from '../../Redux/TasksAddSlice.jsx'
 import { Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import Checkbox from "@mui/material/Checkbox";
 import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ButtonBase } from '@mui/material'
-import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 import UploadImage from "./UploadImage.js";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
+import useTaskManager from "../../hooks/useTaskManager.jsx";
 
 
 
-const InputToDo = ({isEdit , todo , setIsEdit , open , setOpen}) => {
+const InputToDo = ({isEdit , todo  , open , setOpen , groupId}) => {
   const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
-  let groupId = useSelector(state => state.toDo.selectedGroupId)
+  const {add,edit}=useTaskManager(userId , groupId)
+  const addStatus= useSelector((state)=> state.toDo.addTodoStatus)
+  const editStatus= useSelector((state)=> state.toDo.editTodoStatus)
   const [todoId , setTodoId]= useState(null)
   const [file, setFile] = useState(null);
   const [priority, setPriority] = useState('none');
   const [checkedPriority, setCheckedPriority] = useState(false)
   const [form, setForm] = useState('');
 
+
+  const initalForm =()=>{
+    setForm({ title: '', description: '', priority: 'none', dueDate:dayjs(), catagory: '4task', image: 'Images/doit.jpg',completed:false });
+  
+   }
 
   useEffect(()=>{ 
     if(!isEdit){
@@ -53,21 +58,20 @@ const InputToDo = ({isEdit , todo , setIsEdit , open , setOpen}) => {
   const handelClose = () => { setOpen(false); setFile(null) }
   const handelCloseAll = () => { setOpen(false); }
   
- const initalForm =()=>{
-  setForm({ title: '', description: '', priority: 'none', dueDate:dayjs(), catagory: '4task', image: 'Images/doit.jpg',completed:false });
-
- }
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
+
   const handleDateChange=(newValue)=>{
    if(newValue){
     setForm(prev => ({ ...prev, dueDate:newValue }));
    }
     
   }
+
 
   const handleSubmit =async (e) => {
     e.preventDefault();
@@ -78,37 +82,23 @@ const InputToDo = ({isEdit , todo , setIsEdit , open , setOpen}) => {
       image: file?file:form.image,
     };
 
-    if(isEdit){
-      try{
-        await dispatch(updateAllTask({userId, todoId, update:updatedForm})).unwrap()
-        initalForm()
-        handelClose();
-        toast.success('successfully edited')
-    }
-    catch{
-      toast.error('unable to edit')  
-    }
+    const success=isEdit
+     ? await edit(todoId ,updatedForm ,groupId)
+    : await add(groupId,updatedForm)
 
-    }
-
-    else {
-      try{
-        await dispatch(addTodo({
-        userId,
-        groupId: '4task',
-        todo: updatedForm,
-      })).unwrap();
+    if(success){
+      isEdit? toast.success('successfully edited'): toast.success('successfully added')
       initalForm()
       handelClose();
-      toast.success('successfully added')
     }
-    catch{
-      toast.error('unable to add')  
+    else {
+      isEdit?  toast.error('unable to edit') :  toast.error('unable to add') 
+      initalForm()
+      handelClose();
     }
-    }
-   
-  
+
   };
+
 
   const handelPriorityChange = (selectedpriority) => {
     if (checkedPriority === selectedpriority) {
@@ -220,7 +210,7 @@ console.log(todo,'todo')
               </div>
 
 
-              <Button type="submit" sx={{ paddingInline: '30px', backgroundColor: '#ff6867' }} variant="contained" className="self-start" >Add</Button>
+              <Button type="submit" sx={{ paddingInline: '30px', backgroundColor: '#ff6867' }} variant="contained" className="self-start"  disabled={addStatus==='loading' || editStatus === 'loading'}>Add</Button>
             </form>
           </DialogContent>
         </div>
