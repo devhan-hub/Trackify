@@ -4,15 +4,12 @@ import { fetchTodosByGroup, addTodo, updateTodo, deleteTodo } from "../Redux/Tas
 
 const useTaskManager = (userId ,groupId) => {
   const dispatch = useDispatch();
-  const groupStatus = useSelector((state) => state.toDo.groupStatus)
   const todosByGroupStatus = useSelector(state => state.toDo.todosByGroupStatus);
   const tasksInGroup=useSelector(state=>state.toDo.tasksByGroup[groupId])
 
   const fetch = useCallback(() => {
-    console.log(userId, 'userId' ,groupId,'groupId')
-
     if (todosByGroupStatus[groupId] === "idle") {
-      dispatch(fetchTodosByGroup({userId, groupId}))
+      dispatch(fetchTodosByGroup({userId, groupId})).unwrap()
     }
 
   }, [dispatch, userId , todosByGroupStatus])
@@ -20,42 +17,40 @@ const useTaskManager = (userId ,groupId) => {
 
   const add = useCallback(async ( todo) => {
     try {
-      await dispatch(addTodo({ userId, groupId, todo }));
+      await dispatch(addTodo({ userId, groupId, todo })).unwrap();
       return true;
     }
     catch (error) {
       return false;
     }
-  }, [dispatch, userId])
+  }, [dispatch, userId , groupId])
 
 
   const edit = useCallback(async (todoId, updatedTodo) => {
     try {
-      await dispatch(updateTodo({ userId, groupId, updatedTodo, todoId }))
+      await dispatch(updateTodo({ userId, groupId, updatedTodo, todoId })).unwrap()
       return true
     } catch (error) {
       return false
     }
-  }, [dispatch, userId])
+  }, [dispatch, userId , groupId])
 
-  const deleteTodoById = useCallback(async ( todoId) => {
+  const deleteTodoById = useCallback(async ( todoId ) => {
 
     try {
-      await dispatch(deleteTodo({ userId,  todoId }))
+      await dispatch(deleteTodo({ userId,  todoId ,groupId })).unwrap()
       return true
     }
     catch (error) {
       return false
     }
 
-  }, [userId, dispatch])
+  }, [userId, dispatch , groupId])
 
 
 
   useEffect(() => {
-
       fetch();
- 
   }, [groupId, fetch])
 
 
