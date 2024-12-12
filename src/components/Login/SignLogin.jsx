@@ -69,9 +69,9 @@ const SignLogin = () => {
 
     return (
         <>
-            <div className={`login-body  items-center justify-center h-screen overflow-hidden w-full bg-[#ff6867] hidden sm:flex `} >
+            <div className={`login-body  items-center justify-center h-screen overflow-hidden w-full bg-[#42a5f5] hidden sm:flex `} >
               <div className='absolute top-0 h-[20%] w-full bg-[#f3f3f3]'>
-              <div className=' left-0 top-0 size-32 sm:ml-10 sm:mt-2 relative hidden sm:block m-auto'> <img src="Images/logo.png" alt="" /> </div>
+              <div className=' left-0 top-0 size-32 sm:ml-10 sm:mt-2 relative hidden sm:block m-auto'> <img src="Images/logo2.png" alt="" /> </div>
 
               </div>
                 <svg xmlns="http://www.w3.org/2000/svg" className=' absolute top-[20%] svg ' viewBox="0 0 1440 320"><path fill="#f3f3f3" fill-opacity="1" d="M0,320L60,293.3C120,267,240,213,360,181.3C480,149,600,139,720,165.3C840,192,960,256,1080,272C1200,288,1320,256,1380,240L1440,224L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path></svg>
@@ -99,7 +99,7 @@ const SignLogin = () => {
                         animate={isLogin ? 'signIn' : 'signUp'}
                         className={`min-h-full  absolute left-[45%] top-0 opacity-100 z-20 w-[55%] hidden sm:block `}>
 
-                        <div className='bg-[#ff6867]  space-y-4 h-[90vh] rounded-bl-full flex flex-col items-center justify-center text-white'>
+                        <div className='bg-[#42a5f5]  space-y-4 h-[90vh] rounded-bl-full flex flex-col items-center justify-center text-white'>
                             <Typography sx={{ fontFamily: 'Montserrat', fontSize: '30px', textAlign: 'center' }} variant='h1'>Hellow Friend 👋</Typography>
                             <Typography sx={{ fontFamily: 'Montserrat', fontSize: '15px', textAlign: 'center' }} className='w-[70%] mx-auto' variant='p' >Enter yor personal detail and start organizing your task with us 🥰</Typography>
 
@@ -119,7 +119,7 @@ const SignLogin = () => {
                         variants={OverLayLeft}
                         animate={isLogin ? 'signIn' : 'signUp'}
                         className={`min-h-full absolute left-[50%] top-0 opacity-0 z-10 w-[50%] hidden sm:block `} >
-                        <div className='bg-[#ff6867]  space-y-4 h-[90vh] flex flex-col items-center rounded-br-full justify-center text-white'>
+                        <div className='bg-[#42a5f5]  space-y-4 h-[90vh] flex flex-col items-center rounded-br-full justify-center text-white'>
                             <Typography sx={{ fontFamily: 'Montserrat', fontSize: '30px', textAlign: 'center' }} variant='h1'>Welcome Back :)</Typography>
                             <Typography sx={{ fontFamily: 'Montserrat', fontSize: '15px', textAlign: 'center' }} variant='p' >Login with your Email and password</Typography>
                             <button
