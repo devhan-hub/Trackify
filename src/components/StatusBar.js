@@ -1,46 +1,31 @@
-import {CircularProgress , Container , Box , Typography , Grid , Checkbox} from '@mui/material'
-import { Circle ,   AssignmentOutlined  } from '@mui/icons-material'
+import React from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 
-export default function  Progress ({completedTask , totalTask}) {
-    return (
-      <div sx={{ backgroundColor: 'white' }} className="shadow-2xl h-full  px-16  py-12">
-      <Box className='space-y-2  '>
-        <Typography variant='h6' >
-           <AssignmentOutlined  />  <span className="text-[#ff6867]">Task Status</span>
-        </Typography>
-  
-        <Grid container  spacing={6}>
-        <Grid item  >
-           
-           <CircularProgress
-             variant="determinate"
-             value={80}
-             size={100}
-             thickness={4}
-             color="success"
-           />
-         
-         <div> <Checkbox checked size="small"  checkedIcon={<Circle/>} sx={{color:'green', '&.Mui-checked': {
-                  color:'green'}}}/> <span className='capitalize text-[1.18rem]'>Completed</span> </div>  
-         
-       </Grid>
-          <Grid item  >
-           
-              <CircularProgress
-                variant="determinate"
-                value={60}
-                size={100}
-                thickness={4}
-                sx={{color:'red' }}
-              />
-            
-            <div> <Checkbox checked size="small" checkedIcon={<Circle/>} sx={{color:'red', '&.Mui-checked': {
-                  color:'red'}}}/> <span className='capitalize text-[1.18rem]'>InComplete</span> </div>  
-            
-          </Grid>
-          
-        </Grid>
-  
-      </Box>
-    </div>)
-  }
+const data = [
+  { day: "Monday", completed: 5, Incompletd: 4 },
+  { day: "Tuesday", completed: 7, Incompletd: 6 },
+  { day: "Wednesday", completed: 6, Incompletd: 5 },
+  { day: "Thursday", completed: 8, Incompletd: 7 },
+  { day: "Friday", completed: 4, Incompletd: 4 },
+  { day: "Saturday", completed: 3, Incompletd: 2 },
+  { day: "Sunday", completed: 2, Incompletd: 1 },
+];
+
+const StatusBar = () => {
+  return (
+    <BarChart
+      width={400}
+      height={300}
+      data={data}
+      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+    >
+      <XAxis dataKey="day" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Bar dataKey="completed" fill="#2196f3" name="Completed Tasks" />
+    </BarChart>
+  );
+};
+
+export default StatusBar;
