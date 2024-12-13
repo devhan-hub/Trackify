@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { Box } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 import { Add as AddIcon } from "@mui/icons-material";
 import { format } from 'date-fns';
-import TodoDisplay from './TodoDisplay.js'
+import TodoDisplay from './display/TodoDisplay.js'
 import InputToDo from "./inputTask/InputToDo.jsx";
-import Display from "./Display.jsx";
 import Tooltip from '@mui/material/Tooltip';
 import { useSelector } from "react-redux";
 import { selectUserId } from "../Redux/User.jsx";
@@ -15,37 +13,33 @@ import { selectUserId } from "../Redux/User.jsx";
 
 const TodayDate = () => {
   const today = format(new Date(), 'd MMM');
-  return <div>{today}<span className=" text-black text-opacity-45">.Today</span></div>;
+  return <div>{today}<span >.Today</span></div>;
 };
 
-const EachCatagory = ({ name, task }) => {
+const EachCatagory = ({ name, task  ,groupId}) => {
   const userId = useSelector(selectUserId)
   const [openInputDialog, setOpenInputDialog] = useState(false)
-  const [openDisplayDialog, setOpenDisplayDialog] = useState(false)
-  const [selectedTodo, setSelectedTodo] = useState(null)
-  const [selectedTodoId, setSelectedTOdoId] = useState(null)
 
 
   return (
     <>
-      <Box className=" space-y-2 p-4 lg:p-3 w-full border-black border-opacity-30 border-2 h-full ">
 
-        <div className=' shadow-2xl bg-white p-4 space-y-4 min-h-screen'>
-          <Grid container spacing={2} >
+        <div className=' shadow-2xl  p-4 space-y-4 min-h-screen w-full'>
+          <Grid container spacing={2} justifyItems={'space-between'} >
             <Grid item xs={8} className='space-y-2   '>
-              <div className='flex items-center gap-2'> <img src="/Images/home.png" alt="" className='size-8' /> <span className="text-[#ff6867] capitalize text-xl font-Monsta font-bold">{name}</span></div>
-              <div>{TodayDate()}</div>
+              <div className='flex items-center gap-2'> <img src="/Images/home.png" alt="" className='size-8' /> <span className="text-[#2196f3] capitalize text-xl font-Monsta font-bold">{name}</span></div>
+              <div>{TodayDate()} </div> 
             </Grid>
 
-            <Grid item>
+            <Grid item xs={4} justifySelf={'end'}>
               <ButtonBase onClick={() => setOpenInputDialog(true)} className="w-full ">
                 <Tooltip title='Add new task  '>
-                  <AddIcon className="text-[#ff6867] w-full" /> Add Task
+                  <AddIcon className="text-[#2196f3] w-full" /> Add Task
                 </Tooltip>
               </ButtonBase>
             </Grid>
           </Grid>
-          <InputToDo open={openInputDialog} setOpen={setOpenInputDialog} groupId={'4task'} isEdit={false} />
+          <InputToDo open={openInputDialog} setOpen={setOpenInputDialog} groupId={groupId} isEdit={false} />
 
 
           {(task?.length === 0 && task) ? (
@@ -54,13 +48,12 @@ const EachCatagory = ({ name, task }) => {
               <Typography variant="h6">NO Task</Typography >
             </div>
           ) : (
-            <Grid container alignItems={'center'} justifyItems={'center'} spacing={3} className="w-full">
+            <Grid container className="space-y-6"  >
               {task?.map((todo, index) => {
-                const isSelected = selectedTodoId === todo.id;
 
                 return (
-                  <Grid item key={index} className={`w-full cursor-pointer `} onClick={() => { setSelectedTOdoId(todo.id); setSelectedTodo(todo); setOpenDisplayDialog(true) }}>
-                    <TodoDisplay todo={todo} all={true} isSelected={isSelected} />
+                  <Grid item sx={{flexGrow:1}} key={index}>
+                    <TodoDisplay todo={todo} all={true}  groupId={groupId}/>
                   </Grid>
                 )
               })}
@@ -68,11 +61,9 @@ const EachCatagory = ({ name, task }) => {
           )}
         </div>
 
-      </Box>
 
 
-        { selectedTodo && <Display todoId={selectedTodoId} todo={selectedTodo} groupId={'4task'} userId={userId} open={openDisplayDialog} setOpen={setOpenDisplayDialog} className=' shadow-2xl bg-white  ' />
-        }         
+       
 
     </>
   );
