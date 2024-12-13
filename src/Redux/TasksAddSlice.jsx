@@ -76,7 +76,9 @@ export const deleteGroup= createAsyncThunk('task/deleteGroup', async ({userId, g
 export const fetchTodosByGroup = createAsyncThunk('task/fetchTodosByGroup', async ({ userId, groupId }) => {
   const todosCol = collection(db, `users/${userId}/groups/${groupId}/todos`);
   const todosSnapshot = await getDocs(todosCol);
+  
   const todos = todosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  console.log(todos,'whatmalet')
   return { groupId, todos };
 })
 
@@ -112,7 +114,7 @@ const initialState = {
   allTaskStatus: 'idle',
   todosByGroupStatus: {},
   error: null,
-  todoStatus:'idle'
+  todoStatus:'idle',
 };
 
 const taskSlice = createSlice({
@@ -167,7 +169,6 @@ const taskSlice = createSlice({
       .addCase(fetchUserTask.fulfilled, (state, action) => {
         state.allTaskStatus = 'succeeded'
         state.allTask = action.payload
-        console.log(action.payload ,'ahun')
       })
 
       .addCase(fetchUserTask.rejected, (state) => {
@@ -206,6 +207,9 @@ const taskSlice = createSlice({
       .addCase(deleteTodo.rejected, (state) => {
         state.todoStatus = 'failed'
       })
+      .addCase(updateTodo.pending, (state) => {
+        state.todoStatus = 'loading'
+      })
 
       .addCase(updateTodo.fulfilled, (state, action) => {
 
@@ -216,6 +220,11 @@ const taskSlice = createSlice({
             state.tasksByGroup[groupId][index] = { ...state.tasksByGroup[groupId][index], ...updatedTodo }
           }
         }
+         state.todoStatus = 'succeeded'
+      })
+
+      .addCase(updateTodo.rejected, (state) => {
+        state.todoStatus = 'failed'
       })
 
       .addCase(addGroup.fulfilled, (state, action) => {
