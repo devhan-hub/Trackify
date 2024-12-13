@@ -19,7 +19,7 @@ const useGroupManager = (userId) => {
 
     const add=useCallback(async (group)=>{
        try {
-            await dispatch(addGroup({ userId, group }));
+            await dispatch(addGroup({ userId, group })).unwrap();
             return true;
        }
        catch (error) {
@@ -30,7 +30,7 @@ const useGroupManager = (userId) => {
 
     const edit=useCallback( async (groupId , updated)=>{   
        try {
-           await  dispatch(editGroup({userId , groupId , updated}))
+           await  dispatch(editGroup({userId , groupId , updated})).unwrap()
            return true
        } catch (error) {
          return false
@@ -40,7 +40,7 @@ const useGroupManager = (userId) => {
   const deleteGroupById=useCallback(async (groupId)=>{
    
     try{
-        await  dispatch(deleteGroup({userId, groupId}))
+        await  dispatch(deleteGroup({userId, groupId})).unwrap()
         return true
     }
     catch (error){

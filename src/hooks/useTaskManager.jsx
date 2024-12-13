@@ -2,12 +2,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useCallback, useEffect } from "react";
 import { fetchTodosByGroup, addTodo, updateTodo, deleteTodo } from "../Redux/TasksAddSlice";
 
-const useTaskManager = (userId ,groupId) => {
+const useTaskManager = (userId ) => {
   const dispatch = useDispatch();
   const todosByGroupStatus = useSelector(state => state.toDo.todosByGroupStatus);
-  const tasksInGroup=useSelector(state=>state.toDo.tasksByGroup[groupId])
 
-  const fetch = useCallback(() => {
+  const fetch = useCallback((groupId) => {
     if (todosByGroupStatus[groupId] === "idle") {
       dispatch(fetchTodosByGroup({userId, groupId})).unwrap()
     }
@@ -15,7 +14,7 @@ const useTaskManager = (userId ,groupId) => {
   }, [dispatch, userId , todosByGroupStatus])
 
 
-  const add = useCallback(async ( todo) => {
+  const add = useCallback(async ( todo ,groupId) => {
     try {
       await dispatch(addTodo({ userId, groupId, todo })).unwrap();
       return true;
@@ -23,19 +22,19 @@ const useTaskManager = (userId ,groupId) => {
     catch (error) {
       return false;
     }
-  }, [dispatch, userId , groupId])
+  }, [dispatch, userId ])
 
 
-  const edit = useCallback(async (todoId, updatedTodo) => {
+  const edit = useCallback(async (todoId, update ,groupId) => {
     try {
-      await dispatch(updateTodo({ userId, groupId, updatedTodo, todoId })).unwrap()
+      await dispatch(updateTodo({ userId, groupId,updatedTodo: update, todoId })).unwrap()
       return true
     } catch (error) {
       return false
     }
-  }, [dispatch, userId , groupId])
+  }, [dispatch, userId ])
 
-  const deleteTodoById = useCallback(async ( todoId ) => {
+  const deleteTodoById = useCallback(async ( todoId ,groupId ) => {
 
     try {
       await dispatch(deleteTodo({ userId,  todoId ,groupId })).unwrap()
@@ -45,17 +44,12 @@ const useTaskManager = (userId ,groupId) => {
       return false
     }
 
-  }, [userId, dispatch , groupId])
+  }, [userId, dispatch ])
 
 
 
-  useEffect(() => {
-      fetch();
-  }, [groupId, fetch])
 
-
-
-  return { tasksInGroup, add, edit, fetch, deleteTodoById }
+  return { add, edit, fetch, deleteTodoById }
 }
 
 export default useTaskManager
