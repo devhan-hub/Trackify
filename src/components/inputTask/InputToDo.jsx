@@ -12,7 +12,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ButtonBase } from '@mui/material'
 import dayjs from 'dayjs';
-import UploadImage from "./UploadImage.js";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "react-toastify";
 import useTaskManager from "../../hooks/useTaskManager.jsx";
@@ -20,11 +19,9 @@ import useTaskManager from "../../hooks/useTaskManager.jsx";
 
 
 const InputToDo = ({isEdit , todo  , open , setOpen , groupId}) => {
-  const dispatch = useDispatch();
   const userId = useSelector(selectUserId);
-  const {add,edit}=useTaskManager(userId , groupId)
-  const addStatus= useSelector((state)=> state.toDo.addTodoStatus)
-  const editStatus= useSelector((state)=> state.toDo.editTodoStatus)
+  const {add,edit}=useTaskManager(userId )
+  const todoStatus= useSelector((state)=> state.toDo.todoStatus)
   const [todoId , setTodoId]= useState(null)
   const [file, setFile] = useState(null);
   const [priority, setPriority] = useState('none');
@@ -33,7 +30,7 @@ const InputToDo = ({isEdit , todo  , open , setOpen , groupId}) => {
 
 
   const initalForm =()=>{
-    setForm({ title: '', description: '', priority: 'none', dueDate:dayjs(), catagory: '4task', image: 'Images/doit.jpg',completed:false });
+    setForm({ title: '', description: '', priority: 'none', dueDate:dayjs(), catagory:groupId, image: 'Images/doit.jpg',completed:false });
   
    }
 
@@ -83,8 +80,8 @@ const InputToDo = ({isEdit , todo  , open , setOpen , groupId}) => {
     };
 
     const success=isEdit
-     ? await edit(todoId ,updatedForm ,groupId)
-    : await add(groupId,updatedForm)
+     ? await edit(todoId ,updatedForm,groupId )
+    : await add(updatedForm,groupId)
 
     if(success){
       isEdit? toast.success('successfully edited'): toast.success('successfully added')
@@ -110,7 +107,6 @@ const InputToDo = ({isEdit , todo  , open , setOpen , groupId}) => {
       setPriority(selectedpriority);
     }
   }
-console.log(todo,'todo')
 
   return (
     <div >
@@ -201,16 +197,16 @@ console.log(todo,'todo')
                     sx={{ width: '100%' }}
                   />
                 </div>
-                <div>
+                {/* <div>
                   <p className='font-bold text-[15px] ml-2'>Add Image</p>
                   <UploadImage file={file} setFile={setFile} className="block" />
 
-                </div>
+                </div> */}
 
               </div>
 
 
-              <Button type="submit" sx={{ paddingInline: '30px', backgroundColor: '#ff6867' }} variant="contained" className="self-start"  disabled={addStatus==='loading' || editStatus === 'loading'}>Add</Button>
+              <Button type="submit"  variant="contained" className="self-start"  disabled={todoStatus==='loading'}>Add</Button>
             </form>
           </DialogContent>
         </div>
