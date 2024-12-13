@@ -45,9 +45,6 @@ const SignLogin = () => {
         }
     };
 
-
-
-
     const SignInVariant = {
         signIn: { x: 0, opacity: 1 },
         signUp: { x: '100%', opacity: 0 }
@@ -71,7 +68,7 @@ const SignLogin = () => {
         <>
             <div className={`login-body  items-center justify-center h-screen overflow-hidden w-full bg-[#42a5f5] hidden sm:flex `} >
               <div className='absolute top-0 h-[20%] w-full bg-[#f3f3f3]'>
-              <div className=' left-0 top-0 size-32 sm:ml-10 sm:mt-2 relative hidden sm:block m-auto'> <img src="Images/logo2.png" alt="" /> </div>
+              <div className=' left-0 top-0 size-32 sm:ml-10 sm:-mt-10 relative hidden sm:block m-auto'> <img src="Images/logo2.png" alt="" /> </div>
 
               </div>
                 <svg xmlns="http://www.w3.org/2000/svg" className=' absolute top-[20%] svg ' viewBox="0 0 1440 320"><path fill="#f3f3f3" fill-opacity="1" d="M0,320L60,293.3C120,267,240,213,360,181.3C480,149,600,139,720,165.3C840,192,960,256,1080,272C1200,288,1320,256,1380,240L1440,224L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path></svg>

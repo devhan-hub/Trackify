@@ -4,22 +4,22 @@ import LoadingButton from '@mui/lab/LoadingButton';
 const AuthButton = ({ isLogin, signinStatus, signupStatus }) => {
     if (isLogin) {
         return signinStatus === "loading" ? (
-            <LoadingButton loading loadingPosition="start" variant="outlined">
-                Signing in...
+            <LoadingButton sx={{width:'max-content'}} loading loadingPosition="start" variant="outlined">
+               <span className='px-6'>Signing in...</span> 
             </LoadingButton>
         ) : (
-            <Button type="submit" variant="contained" sx={{ backgroundColor: '#ff6867', color: 'white' }}>
+            <Button sx={{width:'max-content'}} type="submit" variant="contained" >
                 Sign In
             </Button>
         );
     }
 
     return signupStatus === "loading" ? (
-        <LoadingButton loading loadingPosition="start" variant="outlined">
-            Signing up...
+        <LoadingButton sx={{width:'max-content'}} loading loadingPosition="start" variant="outlined">
+            <span className='px-6'>Signing up...</span> 
         </LoadingButton>
     ) : (
-        <Button type="submit" variant="contained" sx={{ backgroundColor: '#ff6867', color: 'white' }}>
+        <Button type="submit" variant="contained" >
             Sign Up
         </Button>
     );

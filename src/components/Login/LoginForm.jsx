@@ -51,6 +51,7 @@ const LoginForm = ({ isLogin, signinStatus, signupStatus, handleSubmit }) => {
                             name='email'
                             sx={{ fontFamily: 'Montserrat' }}
                             fullWidth
+                           
                         />
                         <ErrorMessage name='email' component='div' className='text-red-500' />
 
@@ -79,7 +80,7 @@ const LoginForm = ({ isLogin, signinStatus, signupStatus, handleSubmit }) => {
                                 <ErrorMessage name='confirmPassword' component='div' className='text-red-500' />
                             </>
                         )}
-                          <AuthButton
+                          <AuthButton 
                         isLogin={isLogin}
                         signinStatus={signinStatus}
                         signupStatus={signupStatus}
