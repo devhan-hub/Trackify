@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 export const LazyDashbored = React.lazy(() => import('../Dashbored'));
 export const LazyMain = React.lazy(() => import('../Main'));
 export const LazyUpdate = React.lazy(() => import('../allCatagory/Update'));
-
+export const LazyPlanned = React.lazy(() => import('../Planned'));
 const Navigation = (allGroup  ,path) => {
 
     const NAVIGATION = [
@@ -40,8 +40,8 @@ const Navigation = (allGroup  ,path) => {
             segment: 'planned',
             title: 'Planned',
             icon: <CalendarMonth />,
-            component: (<Suspense fallback={<div>Loading Dashbored</div>}>
-                <LazyDashbored />
+            component: (<Suspense fallback={<div>Loading Planned</div>}>
+                <LazyPlanned />
             </Suspense>),
         },
         {

@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { fetchTodosByGroup, addTodo, updateTodo, deleteTodo } from "../Redux/TasksAddSlice";
+
 
 const useTaskManager = (userId ) => {
   const dispatch = useDispatch();

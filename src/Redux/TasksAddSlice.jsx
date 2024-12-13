@@ -38,10 +38,10 @@ export const deleteGroupTask = createAsyncThunk('task/deleteGroupTask', async ({
 
   return groupId;
 })
-export const updateAllTask = createAsyncThunk('task/updateAllTask', async ({ userId, todoId, updateTodo }) => {
+export const updateAllTask = createAsyncThunk('task/updateAllTask', async ({ userId, todoId, updatedTodo }) => {
   const todoRef = doc(db, `users/${userId}/userTask`, todoId);
-  await updateDoc(todoRef, updateTodo);
-  return { todoId, updateTodo };
+  await updateDoc(todoRef, updatedTodo);
+  return { todoId, updatedTodo };
 })
 
 
@@ -99,7 +99,7 @@ export const deleteTodo = createAsyncThunk('task/deleteTodo', async ({ userId, t
 export const updateTodo = createAsyncThunk('task/updateTodo', async ({ userId, todoId, updatedTodo, groupId } ,{dispatch}) => {
   const todoRef = doc(db, `users/${userId}/groups/${groupId}/todos`, todoId);
   await updateDoc(todoRef, updatedTodo);
-  await dispatch(updateAllTask({userId , todoId,updateTodo}))
+  await dispatch(updateAllTask({userId , todoId,updatedTodo}))
   return { todoId, updatedTodo, groupId };
 })
 
@@ -282,7 +282,7 @@ export const vitalTask = (state) => {
     const taskDueDate = task.dueDate.toDate();
     return (
       taskDueDate.toDateString() === today.toDateString() && 
-      task.priority === 'none'
+      task.priority === 'extreme'
     );
   });
 };

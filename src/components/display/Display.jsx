@@ -82,7 +82,7 @@ export default function Display({ todoId, groupId, userId, todo, open, setOpen }
             <Grid size={12} gap={2}  >
               <p className=' capitalize '> priority: <span className={`${priorityColor(todo?.priority)}  lowercase`}>{todo?.priority}</span></p>
               <p className=' capitalize '> Status: <span className={`${todo?.comleted ? 'text-green-500' : 'text-red-600'}  lowercase`}>{todo?.completed ? 'Completed' : 'Incomplete'}</span></p>
-              <p className=' capitalize text-black text-opacity-45'> DueDate: <span className={`${isOverDue(todo.dueDate) ? 'text-red-600 ' : ''}  lowercase`}>{getDateStatus(todo.dueDate)}</span></p>
+              <p className=' capitalize '> DueDate: <span className={`${isOverDue(todo.dueDate) ? 'text-red-600 ' : ''}  lowercase`}>{getDateStatus(todo.dueDate)}</span></p>
             </Grid>
 
 

@@ -66,7 +66,7 @@ export default function SideDrawer() {
     return (
       <Box sx={{ display: 'flex',flexDirection:'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress />
-        <img src="/Images/logo.png" alt="" />
+        <img src="/Images/logo2.png" alt="" />
       </Box>
     );
   }

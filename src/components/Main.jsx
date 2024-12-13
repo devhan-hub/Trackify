@@ -13,9 +13,9 @@ const Main = ({group , name}) => {
 
     switch(group){
         case 'myday':
-            return <EachCatagory task={todaytask} name={group} groupId={group}/>
+            return <EachCatagory task={todaytask} name={group} groupId={'4task'}/>
         case 'vitalTask':
-            return <EachCatagory task= {vitaltask} name={group} groupId={group}/>  
+            return <EachCatagory task= {vitaltask} name={group} groupId={'4task'}/>  
         case 'planned' :
             // return <Planned/>  
            default :

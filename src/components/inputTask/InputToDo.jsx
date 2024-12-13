@@ -206,7 +206,7 @@ const InputToDo = ({isEdit , todo  , open , setOpen , groupId}) => {
               </div>
 
 
-              <Button type="submit"  variant="contained" className="self-start"  disabled={todoStatus==='loading'}>Add</Button>
+              <Button type="submit"  variant="contained" className="self-start"  disabled={todoStatus==='loading'}>{isEdit ?'Edit':'Add'}</Button>
             </form>
           </DialogContent>
         </div>

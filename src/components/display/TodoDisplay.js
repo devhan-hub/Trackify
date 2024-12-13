@@ -20,13 +20,10 @@ const Img = styled('img')({
 });
 
 
-export default function TodoDisplay({ todo, groupId, isSelected, all }) {
+export default function TodoDisplay({ todo }) {
   const userId = useDispatch(selectUserId);
   const { edit } = useTaskManager(userId)
   const [openDisplayDialog, setOpenDisplayDialog] = useState(false)
-
-
-
 
   return (
     <Paper
@@ -44,12 +41,12 @@ export default function TodoDisplay({ todo, groupId, isSelected, all }) {
       })}
     >
 
-      <Display todoId={todo.id} todo={todo} groupId={groupId} userId={userId} open={openDisplayDialog} setOpen={setOpenDisplayDialog} className=' shadow-2xl bg-white  ' />
+      <Display todoId={todo.id} todo={todo} groupId={todo.catagory} userId={userId} open={openDisplayDialog} setOpen={setOpenDisplayDialog} className=' shadow-2xl bg-white  ' />
 
       <Grid container spacing={0} columnSpacing={0} >
         <Grid size={2}   >
           <IconButton onClick={() => {
-            edit(todo.id, { ...todo, completed: !todo.completed } ,groupId);
+            edit(todo.id, { ...todo, completed: !todo.completed } ,todo.catagory);
           }}>
             <Checkbox checked={todo.completd} icon={<CircleOutlined />} checkedIcon={<CheckCircle />}
               sx={{
@@ -84,7 +81,7 @@ export default function TodoDisplay({ todo, groupId, isSelected, all }) {
             priority: <span className={`${priorityColor(todo.priority)}`}>{todo.priority}</span>
           </Typography>
         </Grid>
-        <Grid size={4} className=''>DueDate:{getDateStatus(todo.dueDate)}
+        <Grid size={4} className=''>DueDate: <span className={`${isOverDue(todo.dueDate) ? 'text-red-600 ' : ''}  lowercase`}>{getDateStatus(todo.dueDate)}</span>
 
         </Grid>
         <Grid size={4} className="capitalize  ">
