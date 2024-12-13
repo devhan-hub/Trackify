@@ -64,7 +64,7 @@ export default function Update({name , id}) {
                     },
                 }}
             >
-                <MenuItem  onClick={() => { setOpenEditDialog(true) }}>
+                <MenuItem  onClick={() => { setOpenEditDialog(true);handleClose() }}>
                     <Edit /> <span className='px-2'>Edit</span>
                 </MenuItem>
                 <MenuItem  onClick={() => setOpenDeleteDialog(true)}>
