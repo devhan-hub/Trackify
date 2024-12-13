@@ -1,30 +1,44 @@
-import React from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import React from 'react';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useSelector } from 'react-redux';
+import { todayTask } from '../Redux/TasksAddSlice';
+import { Paper } from '@mui/material';
 
-const data = [
-  { day: "Monday", completed: 5, Incompletd: 4 },
-  { day: "Tuesday", completed: 7, Incompletd: 6 },
-  { day: "Wednesday", completed: 6, Incompletd: 5 },
-  { day: "Thursday", completed: 8, Incompletd: 7 },
-  { day: "Friday", completed: 4, Incompletd: 4 },
-  { day: "Saturday", completed: 3, Incompletd: 2 },
-  { day: "Sunday", completed: 2, Incompletd: 1 },
-];
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const StatusBar = () => {
+  const todaytask = useSelector(todayTask)
+  const completedTask = todaytask.filter((task) => task.completed === true).length;
+  const totalTask = todaytask.length
+  const incompletTask = totalTask - completedTask;
+
+
+  const data = {
+    labels: ['Completed Tasks', 'Incomplete Tasks'],
+    datasets: [
+      {
+        data: [completedTask, incompletTask],
+        backgroundColor: [
+          '#2196f3',
+          'rgba(255, 0, 0, 0.6)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
-    <BarChart
-      width={400}
-      height={300}
-      data={data}
-      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-    >
-      <XAxis dataKey="day" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="completed" fill="#2196f3" name="Completed Tasks" />
-    </BarChart>
+    <Paper elevation={3} className=' p-3'>
+
+      <h2>Task Completion Status</h2>
+
+      <div style={{ width: '300px', height: '300px' }}>
+
+        <Pie data={data} />
+
+      </div>
+    </Paper>
   );
 };
 
