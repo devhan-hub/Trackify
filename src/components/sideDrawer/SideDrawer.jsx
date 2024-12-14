@@ -10,7 +10,8 @@ import { selectUserId } from '../../Redux/User.jsx'
 import useGroupManager from '../../hooks/useGroupManager.jsx';
 import Navigation from './Navigation.jsx';
 import { SidebarFooter } from './SideDrawerComp.jsx'
-import TodoDisplay from '../display/TodoDisplay.js';
+import {CustomDate}  from './CustomDate.jsx'
+import Stack from '@mui/material/Stack';
 
 
 
@@ -43,6 +44,8 @@ function useDemoRouter(initialPath) {
 
 }
 
+
+
 export default function SideDrawer() {
   const userId = useSelector(selectUserId)
   const router = useDemoRouter('/dashboard');
@@ -53,7 +56,14 @@ export default function SideDrawer() {
   const allTaskStatus = useSelector((state) => state.toDo.allTaskStatus)
  
 
-
+  function ToolbarActionsSearch() {
+    return (
+      <Stack direction="row">
+    < CustomDate/>
+        <ThemeSwitcher />
+      </Stack>
+    );
+  }
 
 
   React.useEffect(() => {
@@ -103,6 +113,7 @@ export default function SideDrawer() {
 
         <DashboardLayout slots={{
           sidebarFooter: SidebarFooter,
+          toolbarActions:ToolbarActionsSearch,
         }}>
           <div className='w-[96%] mx-auto py-4'>
             

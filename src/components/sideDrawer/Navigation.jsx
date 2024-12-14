@@ -1,6 +1,6 @@
 import { CalendarMonth, Dashboard, EventAvailable, FormatListBulleted, PriorityHigh } from '@mui/icons-material';
 import React, { Suspense } from 'react';
-import { Search,SearchDisplay } from '../SearchMain';
+import { Search,SearchDisplay } from './SearchMain';
 
 export const LazyDashbored = React.lazy(() => import('../Dashbored'));
 export const LazyMain = React.lazy(() => import('../Main'));

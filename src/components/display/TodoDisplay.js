@@ -70,7 +70,7 @@ export default function TodoDisplay({ todo }) {
           </Typography>
         </Grid>
         <Grid size={6} >
-          <ButtonBase sx={{ width: 128, height: 128 }}>
+          <ButtonBase sx={{ width: 150, height: 130 }}>
             <Img alt="complex" src={`${todo.image}`} />
           </ButtonBase>
       

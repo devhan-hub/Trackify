@@ -76,13 +76,16 @@ export default function Display({ todoId, groupId, userId, todo, open, setOpen }
 
 
             <Grid size={12} >
-              <Img alt="complex" className='w-[200px]' src={`/${todo?.image}`} />
+              <Img alt="complex" className='w-[300px]' src={`/${todo?.image}`} />
             </Grid>
 
             <Grid size={12} gap={2}  >
               <p className=' capitalize '> priority: <span className={`${priorityColor(todo?.priority)}  lowercase`}>{todo?.priority}</span></p>
               <p className=' capitalize '> Status: <span className={`${todo?.comleted ? 'text-green-500' : 'text-red-600'}  lowercase`}>{todo?.completed ? 'Completed' : 'Incomplete'}</span></p>
-              <p className=' capitalize '> DueDate: <span className={`${isOverDue(todo.dueDate) ? 'text-red-600 ' : ''}  lowercase`}>{getDateStatus(todo.dueDate)}</span></p>
+              <p className=' capitalize y
+              clear
+              
+              '> DueDate: <span className={`${isOverDue(todo.dueDate) ? 'text-red-600 ' : ''}  lowercase`}>{getDateStatus(todo.dueDate)}</span></p>
             </Grid>
 
 
@@ -95,10 +98,10 @@ export default function Display({ todoId, groupId, userId, todo, open, setOpen }
         </Grid>
 
         <div item container alignSelf={'self-end'} className='flex justify-end gap-6 mt-6'>
-          <IconButton sx={{ backgroundColor: '#FF4B3F', color: 'white', scale: '1.1', '&:hover': { scale: '1', backgroundColor: '#FF4B3F' }, transition: 'all', transitionDuration: '.5s' }} className="transition-all duration-700" onClick={() => setOpenDeleteDialog(true)}>
+          <IconButton sx={{ backgroundColor: '#3abeff', color: 'white', scale: '1.1', '&:hover': { scale: '1', backgroundColor: '#3abeff' }, transition: 'all', transitionDuration: '.5s' }} className="transition-all duration-700" onClick={() => setOpenDeleteDialog(true)}>
             <DeleteIcon />
           </IconButton>
-          <IconButton sx={{ backgroundColor: '#FF4B3F', color: 'white', scale: '1.1', '&:hover': { scale: '1', backgroundColor: '#FF4B3F' }, transition: 'all', transitionDuration: '.5s' }} className="transition-all duration-700" onClick={() => { setIsEdit(true); setOpenInputDialog(true) }}>
+          <IconButton sx={{ backgroundColor: '#3abeff', color: 'white', scale: '1.1', '&:hover': { scale: '1', backgroundColor: '#3abeff' }, transition: 'all', transitionDuration: '.5s' }} className="transition-all duration-700" onClick={() => { setIsEdit(true); setOpenInputDialog(true) }}>
             <EditIcon />
           </IconButton>
         </div>
