@@ -1,26 +1,15 @@
 import { CalendarMonth, Dashboard, EventAvailable, FormatListBulleted, PriorityHigh } from '@mui/icons-material';
 import React, { Suspense } from 'react';
 import { Search,SearchDisplay } from './SearchMain';
-<<<<<<< HEAD
-
-export const LazyDashbored = React.lazy(() => import('../Dashbored'));
-export const LazyMain = React.lazy(() => import('../Main'));
-export const LazyUpdate = React.lazy(() => import('../allCatagory/Update'));
-=======
 import Update from '../allCatagory/Update'
 
 export const LazyDashbored = React.lazy(() => import('../Dashbored'));
 export const LazyMain = React.lazy(() => import('../Main'));
->>>>>>> 3ac3b549dac20633ce34058e24ece79ae3e3fb81
 export const LazyPlanned = React.lazy(() => import('../Planned'));
 
 const Navigation = (allGroup, path) => {
     const [filteredTasks, setFilteredTasks] = React.useState(null)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 3ac3b549dac20633ce34058e24ece79ae3e3fb81
     const NAVIGATION = [
         {
             kind: 'header',
@@ -86,16 +75,9 @@ const Navigation = (allGroup, path) => {
             title: group.name,
             icon: <FormatListBulleted />,
             action: path === group.id ? (
-<<<<<<< HEAD
-                <Suspense fallback={<div>Loading Update...</div>}>
-                    <LazyUpdate name={group.name} id={group.id} />
-                </Suspense>
-            ) : null, component: (<Suspense fallback={<div>Loading ....</div>}>
-=======
              <Update name={group.name} id={group.id} />
             ) : null,
              component: (<Suspense fallback={<div>Loading ....</div>}>
->>>>>>> 3ac3b549dac20633ce34058e24ece79ae3e3fb81
 
                 <LazyMain group={group.id} name={group.name} />
             </Suspense>),
