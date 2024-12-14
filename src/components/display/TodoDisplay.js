@@ -64,16 +64,17 @@ export default function TodoDisplay({ todo }) {
             {todo.title}
           </Typography>
         </Grid>
-       
-        <Grid size={8}>
+     
+        <Grid size={6}>
           <Typography variant="body2" gutterBottom>
             {todo.description.length > 50 ? todo.description.slice(0, 100) + '...' : todo.description}
           </Typography>
         </Grid>
-        <Grid size={4}>
+        <Grid size={6} >
           <ButtonBase sx={{ width: 128, height: 128 }}>
             <Img alt="complex" src={`${todo.image}`} />
           </ButtonBase>
+      
         </Grid>
         
         <Grid size={4}>

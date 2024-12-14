@@ -9,45 +9,10 @@ import { Add as AddIcon } from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
 import { ThemeSwitcher } from '@toolpad/core';
 import { useSelector } from 'react-redux';
-import React from 'react';
+import React ,{useState}  from 'react';
+import Fuse from 'fuse.js';
 
-export const  ToolbarActionsSearch =() => {
-    return (
-      <Stack direction="row">
-        <Tooltip title="Search" enterDelay={1000}>
-          <div>
-            <IconButton
-              type="button"
-              aria-label="search"
-              sx={{
-                display: { xs: 'inline', md: 'none' },
-              }}
-            >
-              <SearchIcon />
-            </IconButton>
-          </div>
-        </Tooltip>
-        <TextField
-          label="Search"
-          variant="outlined"
-          size="small"
-          fullWidth
-          slotProps={{
-            input: {
-              endAdornment: (
-                <IconButton type="button" aria-label="search" size="small">
-                  <SearchIcon />
-                </IconButton>
-              ),
-              sx: { pr: 0.5 },
-            },
-          }}
-          sx={{ display: { xs: 'none', md: 'inline-block' }, mr: 1 }}
-        />
-        <ThemeSwitcher />
-      </Stack>
-    );
-  }
+
   
   export const SidebarFooter= ({ mini })=> {
     const [openNewCatagory , setOpenNewCatagory]=React.useState(false)
