@@ -1,32 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { db, auth } from '../Utiles/firebaseConfig'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, setDoc } from 'firebase/firestore'
- import  dayjs  from "dayjs";
-import { toast } from "react-toastify";
+import { db } from '../Utiles/firebaseConfig'
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, setDoc, query ,where } from 'firebase/firestore'
+import { createSelector } from 'reselect';
 
 
 
-
-//all todoes of spacfic group
-
-export const fetchTodosByGroup = createAsyncThunk('task/fetchTodosByGroup', async ({ userId, groupId }) => {
-  const todosCol = collection(db, `users/${userId}/groups/${groupId}/todos`);
-  const todosSnapshot = await getDocs(todosCol);
-  const todos = todosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  return { groupId, todos };
-})
-
-export const fetchGroups = createAsyncThunk('task/fetchGroup', async (userId) => {
-  const groupCol = collection(db, `users/${userId}/groups`)
-  const groupSnapshot = await getDocs(groupCol)
-  return groupSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-})
-
-export const fetchUserTask = createAsyncThunk('task/fetchUserTask', async (userId) => {
+export const fetchUserTask = createAsyncThunk('task/fetchUserTask', async ({userId}) => {
   const userTaskCol = collection(db, `users/${userId}/userTask`);
   const usertaskSnapshot = await getDocs(userTaskCol);
-  return usertaskSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+
+const allTask= usertaskSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+console.log(allTask , 'fetachhhhh')
+return allTask
 })
 
 export const addUserTask = createAsyncThunk('task/addUserTask', async ({ userId, todo, id }) => {
@@ -35,22 +20,66 @@ export const addUserTask = createAsyncThunk('task/addUserTask', async ({ userId,
   return { id, ...todo }
 })
 
+export const deleteInAlltask = createAsyncThunk('task/deleteInAlltask', async ({ userId, todoId }) => {
+  const todoRef = doc(db, `users/${userId}/userTask`, todoId);
+  await deleteDoc(todoRef);
+  return todoId;
+})
+
+export const deleteGroupTask = createAsyncThunk('task/deleteGroupTask', async ({ userId, groupId }) => {
+  const todoRef = collection(db, `users/${userId}/userTask`);
+  const q= query(todoRef , where('catagory' ,'==' ,groupId))
+  const snapShot=await getDocs(q)
+  if(snapShot.empty){
+    return;
+  }
+  const deletePromises = snapShot.docs.map((doc) => deleteDoc(doc.ref));
+  await Promise.all(deletePromises);
+
+  return groupId;
+})
+export const updateAllTask = createAsyncThunk('task/updateAllTask', async ({ userId, todoId, updatedTodo }) => {
+  const todoRef = doc(db, `users/${userId}/userTask`, todoId);
+  await updateDoc(todoRef, updatedTodo);
+  return { todoId, updatedTodo };
+})
+
+
+
+export const fetchGroups = createAsyncThunk('task/fetchGroup', async (userId) => {
+  const groupCol = collection(db, `users/${userId}/groups`)
+  const groupSnapshot = await getDocs(groupCol)
+  return groupSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+})
+
 export const addGroup = createAsyncThunk('task/addgroup', async ({ userId, group }) => {
   const groupcol = collection(db, `users/${userId}/groups`)
   const groupRef = await addDoc(groupcol, group);
   return { id: groupRef.id, ...group }
 })
-export const editGroup= createAsyncThunk('task/editGroup', async ({userId, groupId , update}) => {
+export const editGroup= createAsyncThunk('task/editGroup', async ({userId, groupId , updated}) => {
   const groupDoc = doc(db, `users/${userId}/groups` , groupId)
-  await groupDoc.update(update);
-  return {update};
+  await updateDoc( groupDoc,updated);
+  return updated;
 })
 
-export const deleteGroup= createAsyncThunk('task/deleteGroup', async ({userId, groupId }) => {
+export const deleteGroup= createAsyncThunk('task/deleteGroup', async ({userId, groupId } ,{dispatch}) => {
   console.log(groupId,'delete')
   const groupDoc = doc(db, `users/${userId}/groups/${groupId}`)
   await deleteDoc(groupDoc);
+  await dispatch(deleteGroupTask({userId,groupId}))
   return groupId;
+})
+
+
+
+export const fetchTodosByGroup = createAsyncThunk('task/fetchTodosByGroup', async ({ userId, groupId }) => {
+  const todosCol = collection(db, `users/${userId}/groups/${groupId}/todos`);
+  const todosSnapshot = await getDocs(todosCol);
+  
+  const todos = todosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  console.log(todos,'whatmalet')
+  return { groupId, todos };
 })
 
 export const addTodo = createAsyncThunk('task/addTodo', async ({ userId, groupId, todo }, { dispatch }) => {
@@ -60,23 +89,22 @@ export const addTodo = createAsyncThunk('task/addTodo', async ({ userId, groupId
   return { groupId, id: docRef.id, ...todo}
 })
 
-export const deleteTodo = createAsyncThunk('task/deleteTodo', async ({ userId, todoId, groupId }) => {
+export const deleteTodo = createAsyncThunk('task/deleteTodo', async ({ userId, todoId, groupId } ,{dispatch}) => {
   const todoRef = doc(db, `users/${userId}/groups/${groupId}/todos`, todoId);
   await deleteDoc(todoRef);
+ await dispatch(deleteInAlltask({userId , todoId}))
   return { todoId, groupId };
 })
 
-export const updateTodo = createAsyncThunk('task/updateTodo', async ({ userId, todoId, updatedTodo, groupId }) => {
+export const updateTodo = createAsyncThunk('task/updateTodo', async ({ userId, groupId, updatedTodo, todoId } ,{dispatch}) => {
   const todoRef = doc(db, `users/${userId}/groups/${groupId}/todos`, todoId);
+  console.log(userId , 'userId')
   await updateDoc(todoRef, updatedTodo);
+  await dispatch(updateAllTask({userId , todoId,updatedTodo}))
   return { todoId, updatedTodo, groupId };
 })
-export const updateAllTask = createAsyncThunk('task/updateAllTask', async ({ userId, todoId, update }) => {
-  const todoRef = doc(db, `users/${userId}/userTask`, todoId);
-  console.log(update, 'firebase')
-  await updateDoc(todoRef, update);
-  return { todoId, update };
-})
+
+
 
 const initialState = {
   groups: [],
@@ -87,7 +115,7 @@ const initialState = {
   allTaskStatus: 'idle',
   todosByGroupStatus: {},
   error: null,
- addTodoStatus:'idle'
+  todoStatus:'idle',
 };
 
 const taskSlice = createSlice({
@@ -97,9 +125,9 @@ const taskSlice = createSlice({
     setSelectedGroup(state, action) {
       state.selectedGroupId = action.payload;
     },
-    reset(state ) {
+    reset( ) {
        return initialState
-    }
+    },
   },
   extraReducers: builder => {
     builder
@@ -108,7 +136,6 @@ const taskSlice = createSlice({
       })
       .addCase(fetchGroups.fulfilled, (state, action) => {
         state.groupStatus = 'succeeded';
-       console.log(action.payload)
         state.groups = action.payload;
 
         action.payload.forEach(group => {
@@ -142,15 +169,16 @@ const taskSlice = createSlice({
       })
       .addCase(fetchUserTask.fulfilled, (state, action) => {
         state.allTaskStatus = 'succeeded'
-        console.log(action.payload)
         state.allTask = action.payload
       })
 
       .addCase(fetchUserTask.rejected, (state) => {
         state.allTaskStatus = 'failed'
       })
+
+
       .addCase(addTodo.pending, (state) => {
-        state.addTodoStatus = 'loading'
+        state.todoStatus = 'loading'
       })
       .addCase(addTodo.fulfilled, (state, action) => {
         const { groupId, id, ...todo } = action.payload
@@ -158,22 +186,32 @@ const taskSlice = createSlice({
           state.tasksByGroup[groupId] = [];
         }
         state.tasksByGroup[groupId].push({ id, ...todo })
-        state.addTodoStatus='succeeded'
-        toast.success('Successfully added ')
+        state.todoStatus='succeeded'
 
       })
       .addCase(addTodo.rejected, (state) => {
-        state.addTodoStatus = 'failed'
-        toast.success('fail to add ')
+        state.todoStatus = 'failed'
       })
 
+
+      .addCase(deleteTodo.pending, (state) => {
+        state.todoStatus = 'loading'
+      })
       .addCase(deleteTodo.fulfilled, (state, action) => {
         const { groupId, todoId } = action.payload;
         if (state.tasksByGroup[groupId]) {
           state.tasksByGroup[groupId] = state.tasksByGroup[groupId].filter(todo => todo.id !== todoId);
           state.allTask = state.allTask.filter(allTodo => todoId !== allTodo.id)
         }
+        state.todoStatus='succeeded'
       })
+      .addCase(deleteTodo.rejected, (state) => {
+        state.todoStatus = 'failed'
+      })
+      .addCase(updateTodo.pending, (state) => {
+        state.todoStatus = 'loading'
+      })
+
       .addCase(updateTodo.fulfilled, (state, action) => {
 
         const { groupId, todoId, updatedTodo } = action.payload
@@ -183,15 +221,11 @@ const taskSlice = createSlice({
             state.tasksByGroup[groupId][index] = { ...state.tasksByGroup[groupId][index], ...updatedTodo }
           }
         }
+         state.todoStatus = 'succeeded'
       })
 
-      .addCase(updateAllTask.fulfilled, (state, action) => {
-        const { todoId, update } = action.payload
-
-        let index = state.allTask.findIndex(todo => todo.id === todoId)
-        if (index !== -1) {
-          state.allTask[index] = { ...state.allTask[index], ...update }
-        }
+      .addCase(updateTodo.rejected, (state) => {
+        state.todoStatus = 'failed'
       })
 
       .addCase(addGroup.fulfilled, (state, action) => {
@@ -210,6 +244,22 @@ const taskSlice = createSlice({
       .addCase(addUserTask.fulfilled, (state, action) => {
         state.allTask.push(action.payload)
       })
+      .addCase(updateAllTask.fulfilled, (state, action) => {
+        const { todoId, updatedTodo } = action.payload
+
+        let index = state.allTask.findIndex(todo => todo.id === todoId)
+        if (index !== -1) {
+          state.allTask[index] = { ...state.allTask[index], ...updatedTodo }
+        }
+      })
+       .addCase(deleteInAlltask.fulfilled, (state, action) => {
+        state.allTask= state.allTask.filter((task) => task.id !== action.payload)
+   
+     })
+     .addCase(deleteGroupTask.fulfilled, (state, action) => {
+      state.allTask= state.allTask.filter((task) => task.catagory !== action.payload)
+ 
+   })
 
 
   }
@@ -217,4 +267,36 @@ const taskSlice = createSlice({
 
 export const { setSelectedGroup , reset } = taskSlice.actions
 export const selectGroup = state => (state.toDo.groups)
+
+
+export const vitalTask = createSelector(
+  (state) => state.toDo.allTask,
+  (allTask) => {
+    const today = new Date();
+    return allTask.filter((task) => {
+      const taskDueDate = task.dueDate.toDate();
+      return (
+        taskDueDate.toDateString() === today.toDateString() &&
+        task.priority === 'extreme'
+      );
+    });
+  }
+);
+
+export const todayTask = createSelector(
+  (state) => state.toDo.allTask,
+  (allTask) => {
+    const today = new Date();
+    return allTask.filter((task) => {
+      const taskDueDate = task.dueDate.toDate();
+      return (
+        taskDueDate.toDateString() === today.toDateString()
+      
+      );
+    });
+  }
+);
+
+
+
 export default taskSlice.reducer;

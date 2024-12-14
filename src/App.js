@@ -1,17 +1,17 @@
 import './index.css';
-import Main from './components/Main.js';
-import { BrowserRouter as Router } from 'react-router-dom';
 import { useSelector , useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import SignLogin from './components/Login/SignLogin.jsx';
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from './Utiles/ProtectedRoute.jsx';
-import {selectUserId ,logoutUser} from './Redux/User.jsx'
+import {selectUserId } from './Redux/User.jsx'
+import {fetchUserTask} from './Redux/TasksAddSlice.jsx'
 import { reset } from './Redux/TasksAddSlice.jsx';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Dashbored  from './components/Dashbored.jsx'
+import NotFound from './components/NotFound.jsx'
+import SideDrawer from './components/sideDrawer/SideDrawer.jsx';
 function App() {
 const dispatch = useDispatch()
 const userId = useSelector(selectUserId)
@@ -19,13 +19,19 @@ const userId = useSelector(selectUserId)
 useEffect(()=> {
   dispatch(reset())
 }, [userId , dispatch])
+
+useEffect(()=> {
+  dispatch(fetchUserTask({userId}))
+}, [userId , dispatch])
   return (
     <div >
-      <Dashbored/>
-      {/* <Routes> */}
-        {/* <Route path='/login' element={<SignLogin/>}/>
-        <Route element={<ProtectedRoute/>} >
-            <Route element={<Main userId = {userId}/>}  path='/home'/>
+      
+      <Routes>
+      <Route element={<NotFound/>} path ='*'/> 
+        <Route path='/login' element={<SignLogin/>}/>
+         <Route element={<ProtectedRoute/>} >
+            <Route element={<SideDrawer  userId={userId}/>}  path='/'/>
+           
         </Route>
       </Routes>
       <ToastContainer 
@@ -39,7 +45,7 @@ useEffect(()=> {
         draggable 
         pauseOnHover 
         theme="light"
-      />    */}
+      />   
       
 
        </div>

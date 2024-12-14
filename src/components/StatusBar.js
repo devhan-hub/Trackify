@@ -1,46 +1,45 @@
-import {CircularProgress , Container , Box , Typography , Grid , Checkbox} from '@mui/material'
-import { Circle ,   AssignmentOutlined  } from '@mui/icons-material'
+import React from 'react';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useSelector } from 'react-redux';
+import { todayTask } from '../Redux/TasksAddSlice';
+import { Paper } from '@mui/material';
 
-export default function  Progress ({completedTask , totalTask}) {
-    return (
-      <div sx={{ backgroundColor: 'white' }} className="shadow-2xl h-full  px-16  py-12">
-      <Box className='space-y-2  '>
-        <Typography variant='h6' >
-           <AssignmentOutlined  />  <span className="text-[#ff6867]">Task Status</span>
-        </Typography>
-  
-        <Grid container  spacing={6}>
-        <Grid item  >
-           
-           <CircularProgress
-             variant="determinate"
-             value={80}
-             size={100}
-             thickness={4}
-             color="success"
-           />
-         
-         <div> <Checkbox checked size="small"  checkedIcon={<Circle/>} sx={{color:'green', '&.Mui-checked': {
-                  color:'green'}}}/> <span className='capitalize text-[1.18rem]'>Completed</span> </div>  
-         
-       </Grid>
-          <Grid item  >
-           
-              <CircularProgress
-                variant="determinate"
-                value={60}
-                size={100}
-                thickness={4}
-                sx={{color:'red' }}
-              />
-            
-            <div> <Checkbox checked size="small" checkedIcon={<Circle/>} sx={{color:'red', '&.Mui-checked': {
-                  color:'red'}}}/> <span className='capitalize text-[1.18rem]'>InComplete</span> </div>  
-            
-          </Grid>
-          
-        </Grid>
-  
-      </Box>
-    </div>)
-  }
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const StatusBar = () => {
+  const todaytask = useSelector(todayTask)
+  const completedTask = todaytask.filter((task) => task.completed === true).length;
+  const totalTask = todaytask.length
+  const incompletTask = totalTask - completedTask;
+
+
+  const data = {
+    labels: ['Completed Tasks', 'Incomplete Tasks'],
+    datasets: [
+      {
+        data: [completedTask, incompletTask],
+        backgroundColor: [
+          '#2196f3',
+          'rgba(255, 0, 0, 0.6)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  return (
+    <Paper elevation={3} className=' p-3'>
+
+      <h2>Task Completion Status</h2>
+
+      <div style={{ width: '300px', height: '300px' }}>
+
+        <Pie data={data} />
+
+      </div>
+    </Paper>
+  );
+};
+
+export default StatusBar;

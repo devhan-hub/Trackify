@@ -4,7 +4,7 @@ import { Dialog , DialogContent , DialogActions , DialogTitle , Button } from "@
 import useGroupManager from "../../hooks/useGroupManager";
 import { toast } from "react-toastify";
 
- const AddNewCatagory =({ open, setOpen, userId, catagory, isEdit })=> {
+ const AddNewCatagory =({ open, setOpen, userId='', catagory, isEdit })=> {
     const { edit, add } = useGroupManager(userId)
     const [catagoryName, setCatagoryName] = useState('');
     const [catagoryId, setCatagoryId] = useState('')
@@ -30,7 +30,7 @@ import { toast } from "react-toastify";
             task: [],
         }
         const success = isEdit
-            ? await edit(catagoryId, { ...catagory, name: catagoryName })
+            ? await edit(catagory.id, { ...catagory, name: catagoryName })
             : await add(newCatagory);
 
     if(success){
