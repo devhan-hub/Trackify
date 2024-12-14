@@ -4,7 +4,7 @@ import { Stack, Tooltip, IconButton, TextField } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { useSelector } from "react-redux";
-import TodoDisplay from "./display/TodoDisplay";
+import TodoDisplay from "../display/TodoDisplay";
 
 export const Search = ({ setFilteredTasks }) => {
   const allTask = useSelector((state) => state.toDo.allTask);
@@ -59,7 +59,7 @@ export const Search = ({ setFilteredTasks }) => {
               }}
               sx={{ display: { md: "inline-block" }, mr: 1 }}
           />
-          <ThemeSwitcher />
+       
       </Stack>
   );
 }
