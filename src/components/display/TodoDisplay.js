@@ -21,10 +21,9 @@ const Img = styled('img')({
 
 
 export default function TodoDisplay({ todo }) {
-  const userId = useDispatch(selectUserId);
+  const userId = useSelector(selectUserId);
   const { edit } = useTaskManager(userId)
   const [openDisplayDialog, setOpenDisplayDialog] = useState(false)
-
   return (
     <Paper
       sx={(theme) => ({
@@ -48,7 +47,7 @@ export default function TodoDisplay({ todo }) {
           <IconButton onClick={() => {
             edit(todo.id, { ...todo, completed: !todo.completed } ,todo.catagory);
           }}>
-            <Checkbox checked={todo.completd} icon={<CircleOutlined />} checkedIcon={<CheckCircle />}
+            <Checkbox checked={todo.completed} icon={<CircleOutlined />} checkedIcon={<CheckCircle />}
               sx={{
                 color: 'red',
                 '&.Mui-checked': {

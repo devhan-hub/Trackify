@@ -96,8 +96,9 @@ export const deleteTodo = createAsyncThunk('task/deleteTodo', async ({ userId, t
   return { todoId, groupId };
 })
 
-export const updateTodo = createAsyncThunk('task/updateTodo', async ({ userId, todoId, updatedTodo, groupId } ,{dispatch}) => {
+export const updateTodo = createAsyncThunk('task/updateTodo', async ({ userId, groupId, updatedTodo, todoId } ,{dispatch}) => {
   const todoRef = doc(db, `users/${userId}/groups/${groupId}/todos`, todoId);
+  console.log(userId , 'userId')
   await updateDoc(todoRef, updatedTodo);
   await dispatch(updateAllTask({userId , todoId,updatedTodo}))
   return { todoId, updatedTodo, groupId };
@@ -244,11 +245,11 @@ const taskSlice = createSlice({
         state.allTask.push(action.payload)
       })
       .addCase(updateAllTask.fulfilled, (state, action) => {
-        const { todoId, update } = action.payload
+        const { todoId, updatedTodo } = action.payload
 
         let index = state.allTask.findIndex(todo => todo.id === todoId)
         if (index !== -1) {
-          state.allTask[index] = { ...state.allTask[index], ...update }
+          state.allTask[index] = { ...state.allTask[index], ...updatedTodo }
         }
       })
        .addCase(deleteInAlltask.fulfilled, (state, action) => {
