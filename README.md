@@ -4,7 +4,7 @@
 
 
 ## Live
-[trackify-jet.vercel.ap)](url)
+[trackify-jet.vercel.ap](url)
 
 ## Available Scripts
 
