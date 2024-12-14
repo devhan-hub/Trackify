@@ -18,12 +18,6 @@ import Fuse from 'fuse.js';
     const [openNewCatagory , setOpenNewCatagory]=React.useState(false)
     const userId=useSelector(selectUserId)
     return (
-      // <ButtonBase
-      //   onClick={() => dispatch(logoutUser())}
-      //   sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden', width: 'max-content', mr: 'auto' }}
-      // >
-      //   <Logout />    Logout
-      // </ButtonBase>
       <>
       <AddNewCatagory open={openNewCatagory} setOpen={setOpenNewCatagory} userId={userId} isEdit={false} catagory={''} />
   

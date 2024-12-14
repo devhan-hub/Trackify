@@ -197,15 +197,7 @@ const InputToDo = ({isEdit , todo  , open , setOpen , groupId}) => {
                     sx={{ width: '100%' }}
                   />
                 </div>
-                {/* <div>
-                  <p className='font-bold text-[15px] ml-2'>Add Image</p>
-                  <UploadImage file={file} setFile={setFile} className="block" />
-
-                </div> */}
-
               </div>
-
-
               <Button type="submit"  variant="contained" className="self-start"  disabled={todoStatus==='loading'}>{isEdit ?'Edit':'Add'}</Button>
             </form>
           </DialogContent>

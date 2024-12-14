@@ -51,7 +51,7 @@ export default function SideDrawer() {
   const router = useDemoRouter('/dashboard');
   const [path, setPath] = React.useState('dashboard')
   const { allGroup } = useGroupManager(userId)
-  const NAVIGATION = Navigation(allGroup)
+  const NAVIGATION = Navigation(allGroup , path)
   const groupstatus = useSelector((state) => state.toDo.groupstatus)
   const allTaskStatus = useSelector((state) => state.toDo.allTaskStatus)
  
