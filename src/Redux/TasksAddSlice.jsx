@@ -260,8 +260,6 @@ const taskSlice = createSlice({
       state.allTask= state.allTask.filter((task) => task.catagory !== action.payload)
  
    })
-
-
   }
 });
 

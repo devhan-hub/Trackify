@@ -56,7 +56,7 @@ const MobileView = ({ mobileLogin, setMobileLogin, isLogin, signinStatus, signup
 
                 <div className='pt-0 h-[50%] top-0  absolute flex flex-col gap-4 items-center justify-center bg-[#f3f3f3] w-full'>
                     <div className=' left-0 top-0 size-32  relative sm:hidden  m-auto'> <img src="Images/logo2.png" alt="" /> </div>
-                    <div className=' size-24  '><img src="Images/home.png" alt="" /></div>
+                    <div className=' size-20  '><img src="Images/home.png" alt="" /></div>
                     <Typography sx={{ color: '#42a5f5' }} >Stay Organized, Achieve More</Typography>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" className=' absolute top-[50%] svg lg:top-[20%]' viewBox="0 0 1440 320"><path fill="#f3f3f3" fill-opacity="1" d="M0,320L60,293.3C120,267,240,213,360,181.3C480,149,600,139,720,165.3C840,192,960,256,1080,272C1200,288,1320,256,1380,240L1440,224L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path></svg>
