@@ -1,6 +1,6 @@
 
 # Trackify
-![logo](public/Images/logo.jpg)
+![logo](public/Images/logo.png)
 
 
 ## Live
@@ -169,20 +169,23 @@ Whether you're managing personal goals or work projects, **Trackify** helps you 
  git clone https://github.com/devhan-hub/TaskTracker.git
  
 3. **Navigate into the Directory**]
- 
+ ```bash
    cd TaskTracker
+```
 
  3. **Install dependencies**
-    
+   ```bash
       npm install
     or
       yarn install
+```
     
  5. **Run the Appication**
-
+```bash
    npm run
     or
     yarn run
+```
     
 ## Database Schema
 
@@ -230,8 +233,16 @@ Whether you're managing personal goals or work projects, **Trackify** helps you 
     - `priority`: String (Priority of the task, e.g., 'low', 'medium', 'high')
 
 
-     ## Authors
-       Hanan Abdushikur -[GitHub](https://github.com/devhan-hub)/[LinkedIn](https://linkedin.com/in/hanan-abdulshikur)
+   ## Author
 
-    ## License
-      Copyright (C) Licensed under the MIT License
+**Hanan Abdushikur**  
+- [GitHub](https://github.com/devhan-hub)  
+- [LinkedIn](https://linkedin.com/in/hanan-abdulshikur)
+
+---
+
+## License
+
+This project is licensed under the **MIT License**.  
+Copyright &copy; 2024 Hanan Abdushikur.
+
