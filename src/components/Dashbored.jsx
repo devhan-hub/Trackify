@@ -4,14 +4,14 @@ import Grid from '@mui/material/Grid2'
 import { useSelector } from 'react-redux'
 import StatusBar from './StatusBar'
 import {selectUserId ,logoutUser} from '../Redux/User.jsx'
-import { todayTask, vitalTask } from '../Redux/TasksAddSlice.jsx'
+import { todayTask } from '../Redux/TasksAddSlice.jsx'
 import EachCatagory from './EachCatagory.js'
 
 const Dashbored = () => {
  const userId = useSelector(selectUserId)
- const vitaltask=useSelector(vitalTask)
  const todaytask=useSelector(todayTask)
- const inCompletedTask = todaytask.filter((task) => task.completed === false);
+ const IncompleteTask =  todaytask.filter((task) => task.completed === false);
+ const completedTask = todaytask.filter((task) => task.completed === true);
 const {firstName}=useSelector((state)=>state.user.userDetail)
 
 
@@ -26,15 +26,16 @@ const {firstName}=useSelector((state)=>state.user.userDetail)
       <Grid container style={{ minHeight: '100vh' }} spacing={2} className='p-4 border-2 border-gray-200 shadow-2xl '>
      
         <Grid size={{xs:12 , lg:6}} spacing={2} className='flex-grow'>
-        <EachCatagory name={'InComplet-Task'} groupId={'4task'} task={inCompletedTask}/> 
+        <EachCatagory name={'Today-Task'} groupId={'4task'} task={IncompleteTask}/> 
         </Grid>
 
         <Grid size={{xs:12 , lg:6}} className='space-y-4  flex-grow h-full'>
-          <Grid size={12}>
+         {todaytask.length > 0 && <Grid size={12}>
           <StatusBar/>
-          </Grid>
+          </Grid>}
           <Grid size={12} spacing={2} className='flex-grow'>
-        <EachCatagory name={'Urgent-Task'} groupId={'4task'} task={vitaltask}/> 
+       
+        <EachCatagory name={'Completed-Task'} groupId={'4task'} task={completedTask}/> 
         </Grid>
 
           </Grid>

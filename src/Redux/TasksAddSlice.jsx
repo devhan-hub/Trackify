@@ -287,13 +287,23 @@ export const todayTask = createSelector(
   (state) => state.toDo.allTask,
   (allTask) => {
     const today = new Date();
+    const priorityOrder = {
+      extreme: 1,
+      moderate: 2,
+      low: 3,
+      none: 4,
+    };
+    
     return allTask.filter((task) => {
       const taskDueDate = task.dueDate.toDate();
-      return (
-        taskDueDate.toDateString() === today.toDateString()
+      return  taskDueDate.toDateString() === today.toDateString() 
+    })  
       
-      );
-    });
+      .sort((a, b)=>{
+         const priorityA= priorityOrder[a.priority]
+         const priorityB= priorityOrder[b.priority]
+         return priorityA -priorityB
+      })
   }
 );
 
