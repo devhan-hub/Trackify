@@ -24,6 +24,7 @@ export default function TodoDisplay({ todo }) {
   const userId = useSelector(selectUserId);
   const { edit } = useTaskManager(userId)
   const [openDisplayDialog, setOpenDisplayDialog] = useState(false)
+
   return (
     <Paper
       sx={(theme) => ({
@@ -33,6 +34,7 @@ export default function TodoDisplay({ todo }) {
         height: 'auto',
         borderRadius: '15px',
         flexGrow: 1,
+        overflow:'hidden',
         backgroundColor: '#fff',
         ...theme.applyStyles('dark', {
           backgroundColor: '#1A2027',
@@ -59,7 +61,7 @@ export default function TodoDisplay({ todo }) {
         </Grid>
         <Grid container  size={10} justifyContent={'flex-start'} alignItems={'center'} onClick={()=>setOpenDisplayDialog(true)}>
         <Grid size={12}>
-          <Typography gutterBottom variant="h6" className="font-bold capitalize">
+          <Typography gutterBottom variant="h6" className={`font-bold capitalize ${todo.completed?'line-through':''} `}>
             {todo.title}
           </Typography>
         </Grid>
