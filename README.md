@@ -1,6 +1,6 @@
 
 # Trackify
-![logo2](https://github.com/user-attachments/assets/26274ee7-1db9-474f-bf91-f01b53882906)
+![logo](public/Images/logo.jpg)
 
 
 ## Live
