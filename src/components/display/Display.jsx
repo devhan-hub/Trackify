@@ -13,7 +13,7 @@ import useTaskManager from '../../hooks/useTaskManager'
 import { toast } from "react-toastify";
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
-import { CloseOutlined} from '@mui/icons-material';
+import { Close, CloseOutlined} from '@mui/icons-material';
 import { priorityColor ,isOverDue ,getDateStatus}  from './Utiles'
 
 const Img = styled('img')({
@@ -67,7 +67,11 @@ export default function Display({ todoId, groupId, userId, todo, open, setOpen }
          
         <Grid container spacing={3} >
         <Grid size={12} height={35}/>
-
+        <Grid  size={12}>
+            <IconButton onClick={()=>setOpen(false)}>
+              <Close/>
+            </IconButton>
+          </Grid>
           <Grid  size={12}>
             <Typography variant="h5" component="div" className="font-bold capitalize text-center ">
               {todo?.title}
@@ -139,10 +143,12 @@ export default function Display({ todoId, groupId, userId, todo, open, setOpen }
      
       <Drawer
        sx={{
-        width: 400,
+        maxWidth: 400,
+        width:'100%',
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: 400,
+          maxWidth: 400,
+          width:'100%',
         },
       }}
        className='xl:hidden block' open={open} variant='temporary' onClose={() => setOpen(false)} anchor='right'>
