@@ -3,11 +3,13 @@ import TextField from '@mui/material/TextField';
 import { Dialog , DialogContent , DialogActions , DialogTitle , Button } from "@mui/material";
 import useGroupManager from "../../hooks/useGroupManager";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
  const AddNewCatagory =({ open, setOpen, userId='', catagory, isEdit })=> {
     const { edit, add } = useGroupManager(userId)
     const [catagoryName, setCatagoryName] = useState('');
     const [catagoryId, setCatagoryId] = useState('')
+    const deleteStatus= useSelector((state)=>state.toDo.todoStatus)
 
 
     useEffect(() => {
@@ -75,7 +77,7 @@ import { toast } from "react-toastify";
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpen(false)}>CANCEL</Button>
-                    <Button onClick={handleSubmit}>{isEdit ? 'EDIT' : "ADD"}</Button>
+                    <Button onClick={handleSubmit} disabled={deleteStatus === 'loading'}>{isEdit ? 'EDIT' : "ADD"}</Button>
                 </DialogActions>
             </Dialog>
         </>

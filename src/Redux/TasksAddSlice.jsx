@@ -227,16 +227,28 @@ const taskSlice = createSlice({
       .addCase(updateTodo.rejected, (state) => {
         state.todoStatus = 'failed'
       })
+      .addCase(addGroup.pending, (state, action) => {
+        state.todoStatus='loading'
+     })
 
       .addCase(addGroup.fulfilled, (state, action) => {
         state.groups.push(action.payload);
+         state.todoStatus='succeeded'
       })
+      .addCase(editGroup.pending, (state, action) => {
+        state.todoStatus='loading'
+     })
       .addCase(editGroup.fulfilled, (state, action) => {
          const index= state.groups.findIndex((group) => group.id === action.payload.id)
         state.groups[index]=action.payload;
+         state.todoStatus='succeeded'
+      })
+      .addCase(deleteGroup.pending, (state, action) => {
+         state.todoStatus='loading'
       })
       .addCase(deleteGroup.fulfilled, (state, action) => {
         state.groups= state.groups.filter((group) => group.id !== action.payload)
+        state.todoStatus='succeeded'
    
      })
 
