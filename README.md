@@ -9,26 +9,31 @@
 ## Available Scripts
 
 ## Screenshots
-![image](https://github.com/user-attachments/assets/f8b8c49b-9137-4371-a59a-fd8fdcd33501)
+![image](public/Images/image1.jpg)
 
 
-![image](https://github.com/user-attachments/assets/80b2540c-627b-42b8-8bd7-36fbc0ccc12a)
+![image](public/Images/image2.jpg)
 
 
-![image](https://github.com/user-attachments/assets/79397551-c07a-493a-acb9-14dd7de51773)
+![image](public/Images/image3.jpg)
 
 
-![image](https://github.com/user-attachments/assets/48412ec4-7d10-42be-b50b-124750d3d792)
+![image](public/Images/image4.jpg)
 
 
-![image](https://github.com/user-attachments/assets/0b84b41e-c50d-4089-b253-095b7294a363)
+![image](public/Images/image6.jpg)
 
 
-![image](https://github.com/user-attachments/assets/6b3bb4bc-fbfa-418d-8eb7-85477b44fa9d)
->
-![image](https://github.com/user-attachments/assets/1cbe50d1-e823-44ee-ad75-ca80129e507b)
-![image](https://github.com/user-attachments/assets/7572ad3f-c0fa-4161-88af-8586dbd0bdc8)
-![image](https://github.com/user-attachments/assets/ec1748bb-51f3-4ccd-8971-1a5b67ec3cc8)
+![image](public/Images/image7.jpg)
+
+
+![image](public/Images/image8.jpg)
+
+
+![image](public/Images/image9.jpg)
+
+
+![image](public/Images/image10.jpg)
 
 
 
