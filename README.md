@@ -1,6 +1,6 @@
 
 # Trackify
-![logo](public/Images/logo.jpg)
+![logo](public/Images/logo.png)
 
 
 ## Live
