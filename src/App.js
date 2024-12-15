@@ -12,13 +12,32 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NotFound from './components/NotFound.jsx'
 import SideDrawer from './components/sideDrawer/SideDrawer.jsx';
+import { useNavigate } from 'react-router-dom';
+import { auth } from './Utiles/firebaseConfig.jsx';
+import { onAuthStateChanged } from 'firebase/auth';
+import { getDetailUser } from './Redux/User.jsx';
 function App() {
 const dispatch = useDispatch()
 const userId = useSelector(selectUserId)
+const navigate=useNavigate();
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth,async (user) => {
+    if (user) {
+     
+      const userId = user.uid;
+       await dispatch(getDetailUser(userId)).unwrap(); 
+       navigate('/')            
+      
+    } else {
+     
+      dispatch(reset());
+      navigate('/login'); 
+    }
+  });
 
-useEffect(()=> {
-  dispatch(reset())
-}, [userId , dispatch])
+  return () => unsubscribe();
+}, [dispatch, auth, navigate]);
+
 
 useEffect(()=> {
   dispatch(fetchUserTask({userId}))

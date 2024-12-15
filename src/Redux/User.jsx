@@ -1,7 +1,7 @@
 import { createSlice  , createAsyncThunk} from '@reduxjs/toolkit';
 import { auth , db } from '../Utiles/firebaseConfig'
 import { setDoc, doc, getDoc } from "firebase/firestore";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { collection } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 export const signUpUser = createAsyncThunk('task/signUpUser', async ({  firstName, email, password }) => {
@@ -39,23 +39,24 @@ export const getDetailUser = createAsyncThunk('task/getDetailUser', async (uid) 
       
     }
    })
+   export const logout = createAsyncThunk('task/logout', async () => {
+    await signOut(auth);
+   })
 
-   
   
  const initialState ={
     userDetail:{},
     signinStatus:'idle',
     signupStatus:'idle',
     loading:true,
-    error:''
-  
+    error:'' 
 }
 
 const userSlice = createSlice({
     name:'user',
     initialState,
     reducers:{
-        logoutUser:(state) => {
+        logoutUser: (state) => {
             state.userDetail={};
             state.status= 'idle';
             state.signinStatus="idle";
